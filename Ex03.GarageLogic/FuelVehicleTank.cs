@@ -1,15 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Ex03.GarageLogic
 {
-    internal abstract class FuelVehicle : Vehicle
+    public class Fuel : Vehicle.Tank
     {
+        private readonly eFuelType m_FuelType;
         private readonly float r_MaxFuelAmount;
         private float m_FuelAmount;
-        private eFuelType m_FuelType;
+
+        public Fuel(eFuelType i_FuelType, float i_MaxFuelAmount, float i_FuelAmount)
+        {
+            m_FuelType = i_FuelType;
+            r_MaxFuelAmount = i_MaxFuelAmount;
+            m_FuelAmount = i_FuelAmount;
+        }
+
+        public override eType Type
+        {
+            get { return eType.Fuel; }
+        }
+
+        public override float EnergyPercent
+        {
+            get { return m_FuelAmount / r_MaxFuelAmount; }
+        }
 
         public void Refuel(float i_FuelToAdd, eFuelType i_FuelType)
         {
