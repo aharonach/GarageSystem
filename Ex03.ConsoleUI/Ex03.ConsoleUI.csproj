@@ -38,6 +38,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleUtils.cs" />
+    <Compile Include="GarageUI.cs" />
+    <Compile Include="InputUtils.cs" />
+    <Compile Include="Menu.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
