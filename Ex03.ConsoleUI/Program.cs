@@ -12,6 +12,9 @@ namespace Ex03.ConsoleUI
         {
             GarageUI garageUI = new GarageUI();
             garageUI.run();
+
+            Console.WriteLine("Press any key...");
+            Console.ReadLine();
         }
     }
 }

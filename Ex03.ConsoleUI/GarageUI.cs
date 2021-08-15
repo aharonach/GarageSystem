@@ -8,6 +8,10 @@ namespace Ex03.ConsoleUI
     class GarageUI
     {
 
+        private const int k_minLicenseNumberLength = 7;
+        private const int k_maxLicenseNumberLength = 8;
+
+
         private Menu menu = new Menu();
         // create engine
 
@@ -18,19 +22,15 @@ namespace Ex03.ConsoleUI
 
         public void run()
         {
-            int userInput = 0;
             Menu.eActionType optionActionType;
             do
             {
                 menu.printMenu();
 
-                userInput = getMenuChoice(menu.Length);
+                int userInput = getMenuChoice(menu.Length);
                 optionActionType = menu.getActionOfOption(userInput);
 
-                if (optionActionType != Menu.eActionType.Exit)
-                {
-                    doAction(optionActionType);
-                }
+                doAction(optionActionType);
 
             } while (optionActionType != Menu.eActionType.Exit);
         }
@@ -61,6 +61,7 @@ namespace Ex03.ConsoleUI
             switch (option)
             {
                 case Menu.eActionType.InsertCar:
+                    insertCar();
                     Console.WriteLine("InsertCar");
                     break;
 
@@ -83,8 +84,25 @@ namespace Ex03.ConsoleUI
                 case Menu.eActionType.ViewCar:
                     Console.WriteLine("ViewCar");
                     break;
+
+                case Menu.eActionType.Exit:
+                    Console.WriteLine("Bye");
+                    break;
             }
         }
+
+        private void insertCar()
+        {
+            bool m_carIsAlreadyInGarage = false;
+
+            Console.WriteLine("Enter license number:");
+            string number = InputUtils.getLicenseNumberFromUser(k_minLicenseNumberLength, k_maxLicenseNumberLength);
+
+            Console.WriteLine(number);
+
+        }
+
+
 
     }
 }
