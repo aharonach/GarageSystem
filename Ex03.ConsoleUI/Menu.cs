@@ -66,6 +66,5 @@ namespace Ex03.ConsoleUI
             Exit
         }
 
-
     }
 } 

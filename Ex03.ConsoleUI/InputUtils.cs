@@ -83,5 +83,34 @@ namespace Ex03.ConsoleUI
 
             return answer;
         }
+
+        public static string getLicenseNumberFromUser(int minLength, int maxLength)
+        {
+            bool inputIsValid;
+            string stringFromUser;
+
+            do
+            {
+                inputIsValid = true;
+
+                stringFromUser = Console.ReadLine();
+                bool allCharsAreDigits = stringFromUser.All(Char.IsDigit);
+                bool lingthIsCurrect = isNumberInRange(stringFromUser.Length, minLength, maxLength);
+
+                inputIsValid = allCharsAreDigits && lingthIsCurrect;
+
+                if (!inputIsValid)
+                {
+                    Console.WriteLine("Invalid input.");
+                }
+            }
+            while (!inputIsValid);
+
+            return stringFromUser;
+        }
+
+
+
+
     }
 }
