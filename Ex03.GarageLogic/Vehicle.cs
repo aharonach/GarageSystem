@@ -18,7 +18,7 @@ namespace Ex03.GarageLogic
             r_ModelName = i_ModelName;
             r_NumOfWheels = i_NumOfWheels;
             r_Wheels = new List<Wheel>(r_NumOfWheels);
-            InitWheels(i_MaxWheelAirPressure);
+            initWheels(i_MaxWheelAirPressure);
         }
 
         public string License
@@ -50,10 +50,8 @@ namespace Ex03.GarageLogic
             }
         }
 
-        private void InitWheels(float i_MaxAirPressure)
+        private void initWheels(float i_MaxAirPressure)
         {
-            
-
             for (int i = 0; i < r_NumOfWheels; i++)
             {
                 AddWheel(string.Empty, i_MaxAirPressure, 0);
@@ -65,12 +63,10 @@ namespace Ex03.GarageLogic
             return this.License.GetHashCode();
         }
 
-        public PropertyInfo[] GetAvialableProperties()
+        public PropertyInfo[] GetAvailableProperties()
         {
             Type objectType = this.GetType();
-
-
-
+            return objectType.GetProperties();
         }
 
         public abstract class Tank
