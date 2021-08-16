@@ -2,22 +2,15 @@
 
 namespace Ex03.GarageLogic
 {
-    public class Car : Vehicle
+    public abstract class Car : Vehicle
     {
+        protected const float k_MaxWheelAirPressure = 32;
+        protected const int k_NumOfWheels = 4;
         private eColor m_Color;
         private eDoors m_NumOfDoors;
 
-        public Car(
-            string i_License, 
-            List<Wheel> i_Wheels,
-            string i_Name,
-            Tank i_Tank,
-            eColor i_Color,
-            eDoors i_Doors) 
-            : base(i_License, i_Wheels, i_Name, i_Tank)
+        protected Car(string i_License, string i_Name) : base(i_License, i_Name, k_NumOfWheels, k_MaxWheelAirPressure)
         {
-            Color = i_Color;
-            NumOfDoors = i_Doors;
         }
 
         public eColor Color

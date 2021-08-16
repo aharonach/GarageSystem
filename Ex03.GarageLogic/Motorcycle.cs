@@ -4,20 +4,18 @@ namespace Ex03.GarageLogic
 {
     public class Motorcycle : Vehicle
     {
-        private readonly int r_EngineCapacity;
+        protected const float k_MaxWheelAirPressure = 32;
+        protected const int k_NumOfWheels = 2;
         private eLicenseType m_LicenseType;
 
-        public Motorcycle(
-            string i_License,
-            List<Wheel> i_Wheels,
-            string i_Name,
-            Tank i_Tank,
-            int i_EngineCapacity,
-            eLicenseType i_LicenseType) : base(i_License, i_Wheels, i_Name, i_Tank)
+        public Motorcycle(string i_License, string i_Name) : base(i_License, i_Name, k_NumOfWheels, k_MaxWheelAirPressure)
         {
-            VehicleTank = i_Tank;
-            r_EngineCapacity = i_EngineCapacity;
-            m_LicenseType = i_LicenseType;
+        }
+
+        public eLicenseType LicenseType
+        {
+            get { return m_LicenseType; }
+            set { m_LicenseType = value; }
         }
 
         public enum eLicenseType

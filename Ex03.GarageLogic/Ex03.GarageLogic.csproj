@@ -36,7 +36,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Car.cs" />
+    <Compile Include="ElectricMotorcycle.cs" />
+    <Compile Include="ElectricCar.cs" />
     <Compile Include="ElectricVehicleTank.cs" />
+    <Compile Include="FuelCar.cs" />
+    <Compile Include="FuelMotorcycle.cs" />
     <Compile Include="FuelVehicleTank.cs" />
     <Compile Include="Garage.cs" />
     <Compile Include="Motorcycle.cs" />

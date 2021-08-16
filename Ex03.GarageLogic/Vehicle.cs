@@ -1,21 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Ex03.GarageLogic
 {
     public abstract class Vehicle
     {
+        private readonly int r_NumOfWheels;
         private readonly string r_License;
         private readonly List<Wheel> r_Wheels;
-        private string m_Name;
+        private readonly string r_ModelName;
         private Tank m_Tank;
 
-        protected Vehicle(string i_License, List<Wheel> i_Wheels, string i_Name, Tank i_Tank)
+        protected Vehicle(string i_License, string i_ModelName, int i_NumOfWheels, float i_MaxWheelAirPressure)
         {
             r_License = i_License;
-            r_Wheels = i_Wheels;
-            m_Name = i_Name;
-            VehicleTank = i_Tank;
+            r_ModelName = i_ModelName;
+            r_NumOfWheels = i_NumOfWheels;
+            r_Wheels = new List<Wheel>(r_NumOfWheels);
+            InitWheels(i_MaxWheelAirPressure);
         }
 
         public string License
@@ -23,26 +26,51 @@ namespace Ex03.GarageLogic
             get { return r_License; }
         }
 
-        public string Name
+        public string ModelName
         {
-            get { return m_Name; }
-            set { m_Name = value; }
+            get { return r_ModelName; }
         }
 
-        public List<Wheel> Wheels
+        protected List<Wheel> Wheels
         {
             get { return r_Wheels; }
         }
         
-        public Tank VehicleTank
+        protected Tank VehicleTank
         {
             get { return m_Tank; }
-            protected set { m_Tank = value; }
+            set { m_Tank = value; }
+        }
+
+        protected void AddWheel(string i_Manufacturer, float i_MaxAirPressure, float i_AirPressure)
+        {
+            if(r_Wheels.Count < r_NumOfWheels)
+            {
+                r_Wheels.Add(new Wheel(i_Manufacturer, i_MaxAirPressure, i_AirPressure));
+            }
+        }
+
+        private void InitWheels(float i_MaxAirPressure)
+        {
+            
+
+            for (int i = 0; i < r_NumOfWheels; i++)
+            {
+                AddWheel(string.Empty, i_MaxAirPressure, 0);
+            }
         }
 
         public override int GetHashCode()
         {
             return this.License.GetHashCode();
+        }
+
+        public PropertyInfo[] GetAvialableProperties()
+        {
+            Type objectType = this.GetType();
+
+
+
         }
 
         public abstract class Tank
@@ -73,14 +101,14 @@ namespace Ex03.GarageLogic
             public Wheel(string i_Manufacturer, float i_MaxAirPressure, float i_AirPressure)
             {
                 r_MaxAirPressure = i_MaxAirPressure;
-                Manufacturer = i_Manufacturer;
-                AirPressure = i_AirPressure;
+                m_Manufacturer = i_Manufacturer;
+                m_AirPressure = i_AirPressure;
             }
 
             public string Manufacturer
             {
-                get { return m_Manufacturer; }
-                private set { m_Manufacturer = value; }
+                get;
+                protected set;
             }
 
             public float MaxAirPressure

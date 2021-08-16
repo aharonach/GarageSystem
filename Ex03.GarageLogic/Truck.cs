@@ -4,25 +4,19 @@ namespace Ex03.GarageLogic
 {
     public class Truck : Vehicle
     {
-        private readonly float r_MaxCarryingCapacity;
+        protected const float k_MaxWheelAirPressure = 26;
+        private const int k_NumOfWheels = 16;
+        private float m_MaxCarryingCapacity;
         private bool m_DrivesDangerousMaterials;
 
-        public Truck(
-            string i_License,
-            List<Wheel> i_Wheels,
-            string i_Name,
-            Fuel i_FuelTank,
-            float i_MaxCarryingCapacity,
-            bool i_DrivesDangerousMaterials) 
-            : base(i_License, i_Wheels, i_Name, i_FuelTank)
+        public Truck(string i_License, string i_Name) : base(i_License, i_Name, k_NumOfWheels, k_MaxWheelAirPressure)
         {
-            r_MaxCarryingCapacity = i_MaxCarryingCapacity;
-            DrivesDangerousMaterials = i_DrivesDangerousMaterials;
         }
 
         public float MaxCarryingCapacity
         {
-            get { return r_MaxCarryingCapacity; }
+            get { return m_MaxCarryingCapacity; }
+            set { m_MaxCarryingCapacity = value; }
         }
 
         public bool DrivesDangerousMaterials

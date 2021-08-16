@@ -20,10 +20,7 @@ namespace Ex03.GarageLogic
 
         public override float EnergyPercent
         {
-            get
-            {
-                return m_BatteryTime / r_MaxBatteryTime;
-            }
+            get { return m_BatteryTime / r_MaxBatteryTime * 100; }
         }
 
         public void Recharge(float i_BatteryTimeToAdd)

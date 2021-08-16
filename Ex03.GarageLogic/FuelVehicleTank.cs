@@ -4,13 +4,13 @@ namespace Ex03.GarageLogic
 {
     public class Fuel : Vehicle.Tank
     {
-        private readonly eFuelType m_FuelType;
+        private readonly eFuelType r_FuelType;
         private readonly float r_MaxFuelAmount;
         private float m_FuelAmount;
 
         public Fuel(eFuelType i_FuelType, float i_MaxFuelAmount, float i_FuelAmount)
         {
-            m_FuelType = i_FuelType;
+            r_FuelType = i_FuelType;
             r_MaxFuelAmount = i_MaxFuelAmount;
             m_FuelAmount = i_FuelAmount;
         }
@@ -32,7 +32,7 @@ namespace Ex03.GarageLogic
                 throw new Exception("Invalid fuel amount.");
             }
 
-            if (i_FuelType != m_FuelType)
+            if (i_FuelType != r_FuelType)
             {
                 throw new Exception("Fuel type is not valid.");
             }
