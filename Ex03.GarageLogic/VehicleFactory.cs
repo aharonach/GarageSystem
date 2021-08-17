@@ -47,7 +47,7 @@ namespace Ex03.GarageLogic
             return createdVehicle;
         }
 
-        public static Array GetTypes()
+        public static Array GetAvailableTypes()
         {
             return Enum.GetValues(typeof(eType));
         }

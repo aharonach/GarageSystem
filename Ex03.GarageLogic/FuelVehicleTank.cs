@@ -25,6 +25,12 @@ namespace Ex03.GarageLogic
             get { return m_FuelAmount / r_MaxFuelAmount; }
         }
 
+        public float FuelAmount
+        {
+            get { return m_FuelAmount; }
+            set { Refuel(value, r_FuelType); }
+        }
+
         public void Refuel(float i_FuelToAdd, eFuelType i_FuelType)
         {
             if (i_FuelToAdd < 0)
@@ -34,10 +40,17 @@ namespace Ex03.GarageLogic
 
             if (i_FuelType != r_FuelType)
             {
-                throw new Exception("Fuel type is not valid.");
+                throw new ArgumentException("Fuel type is not valid.");
             }
 
-            m_FuelAmount = Math.Min(m_FuelAmount + i_FuelToAdd, r_MaxFuelAmount);
+            float tempFuelAmount = m_FuelAmount + i_FuelToAdd;
+
+            if (tempFuelAmount > r_MaxFuelAmount)
+            {
+                throw new ValueOutOfRangeException("Max amount reached.", 0, r_MaxFuelAmount - m_FuelAmount);
+            }
+
+            m_FuelAmount = tempFuelAmount;
         }
 
         public enum eFuelType

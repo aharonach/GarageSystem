@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace Ex03.GarageLogic
 {
@@ -60,13 +61,68 @@ namespace Ex03.GarageLogic
 
         public override int GetHashCode()
         {
-            return this.License.GetHashCode();
+            return License.GetHashCode();
         }
 
-        public PropertyInfo[] GetAvailableProperties()
+        public Dictionary<string, List<PropertyInfo>> GetAvailableProperties()
         {
-            Type objectType = this.GetType();
-            return objectType.GetProperties();
+
+            Dictionary<string, List<PropertyInfo>> allProperties = new Dictionary<string, List<PropertyInfo>>();
+
+            List<PropertyInfo> fields = new List<PropertyInfo>();
+            allProperties.Add("Fields", fields);
+            List<PropertyInfo> wheels = new List<PropertyInfo>();
+            allProperties.Add("Wheels", wheels);
+            List<PropertyInfo> tank = new List<PropertyInfo>();
+            allProperties.Add("Tank", tank);
+
+
+            // Add only properties that have a setter so it can be assigned next time.
+            foreach (PropertyInfo property in GetType().GetProperties())
+            {
+                if (property.CanWrite)
+                {
+                    fields.Add(property);
+                }
+            }
+
+            // Add available fields for this vehicle's wheels.
+            foreach (Wheel wheel in Wheels)
+            {
+                foreach (PropertyInfo wheelProperty in wheel.GetType().GetProperties())
+                {
+                    if (wheelProperty.CanWrite)
+                    {
+                        wheels.Add(wheelProperty);
+                    }
+                }
+            }
+
+            // Add only properties that have a setter so it can be assigned next time.
+            foreach (PropertyInfo property in VehicleTank.GetType().GetProperties())
+            {
+                if (property.CanWrite)
+                {
+                    tank.Add(property);
+                }
+            }
+
+            return allProperties;
+        }
+
+        public void UpdateFields(Dictionary<string, Dictionary<string, object>> i_ValuesToUpdate)
+        {
+
+            Dictionary<string, object> fields = i_ValuesToUpdate["Fields"];
+            foreach(KeyValuePair<string, object> field in fields)
+            {
+                GetType().GetProperty(field.Key).SetValue(this, field.Value, null);
+
+            }
+
+
+
+
         }
 
         public abstract class Tank
@@ -114,8 +170,14 @@ namespace Ex03.GarageLogic
 
             public float AirPressure
             {
-                get { return m_AirPressure; }
-                private set { Inflate(value); }
+                get
+                {
+                    return m_AirPressure;
+                }
+                set
+                {
+                    Inflate(value);
+                }
             }
 
             public void Inflate(float i_AirToAdd)
@@ -125,7 +187,14 @@ namespace Ex03.GarageLogic
                     throw new Exception("Invalid air amount.");
                 }
 
-                m_AirPressure = Math.Min(m_AirPressure + i_AirToAdd, r_MaxAirPressure);
+                float tempAirPressure = m_AirPressure + i_AirToAdd;
+
+                if (tempAirPressure > MaxAirPressure)
+                {
+                    throw new Exception("Air pressure given is higher.");
+                }
+
+                m_AirPressure = tempAirPressure;
             }
         }
     }

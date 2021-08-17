@@ -23,6 +23,12 @@ namespace Ex03.GarageLogic
             get { return m_BatteryTime / r_MaxBatteryTime * 100; }
         }
 
+        public float BatteryTime
+        {
+            get { return m_BatteryTime; }
+            set { Recharge(value); }
+        }
+
         public void Recharge(float i_BatteryTimeToAdd)
         {
             if (i_BatteryTimeToAdd < 0)
