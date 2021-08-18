@@ -25,21 +25,23 @@ namespace Ex03.ConsoleUI
 
         public int Length
         {
-            get { return r_Options.Count; }
+            get
+            { 
+                return r_Options.Count;
+            }
         }
 
-        public void addOption(string i_title, eActionType i_ActionType)
+        private void addOption(string i_title, eActionType i_ActionType)
         {
             r_Options.Add(new KeyValuePair<string, eActionType>(i_title, i_ActionType));
-
         }
 
-        public eActionType getActionOfOption(int optionNumber)
+        public eActionType GetActionOfOption(int optionNumber)
         {
             return r_Options[optionNumber - 1].Value;
         }
 
-        public void printMenu() {
+        public void PrintMenu() {
             Console.WriteLine("Menu:");
             for(int i=1; i <= Length; i++)
             {

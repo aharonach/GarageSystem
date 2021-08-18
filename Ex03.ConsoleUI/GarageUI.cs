@@ -25,9 +25,9 @@ namespace Ex03.ConsoleUI
 
             do
             {
-                Menu.printMenu();
+                Menu.PrintMenu();
                 int userInput = getMenuChoice(Menu.Length);
-                optionActionType = Menu.getActionOfOption(userInput);
+                optionActionType = Menu.GetActionOfOption(userInput);
                 doAction(optionActionType);
             } 
             while (optionActionType != Menu.eActionType.Exit);
