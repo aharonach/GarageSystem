@@ -9,9 +9,19 @@ namespace Ex03.ConsoleUI
 {
     class Program
     {
-        
+
+
         public static void Main()
         {
+            GarageUI ui = new GarageUI();
+            //ui.run();
+
+            //Dictionary<string, string> test = new Dictionary<string, string>();
+
+            //test.Add("1", "2");
+
+            //Console.WriteLine(test.ContainsKey("1"));
+
             Garage garage = new Garage();
             garage.AddVehicle("gal", "0542832447", VehicleFactory.eType.ElectricCar, "123", "Tesla");
 

@@ -24,6 +24,22 @@ namespace Ex03.GarageLogic
             r_Vehicles.Add(i_License, vehicleInGarage);
         }
 
+        public bool IsVehicleExistsInGarage(string i_License)
+        {
+            return r_Vehicles.ContainsKey(i_License);
+        }
+
+        public void UpdateVehicleInGarageStatus(string i_License, eVehicleStatus i_vehicleStatus)
+        {
+            VehicleInGarage vehicleInGarage;
+            if(IsVehicleExistsInGarage(i_License))
+            {
+                vehicleInGarage = GetVehicleInGarage(i_License);
+                vehicleInGarage.Status = i_vehicleStatus;
+            }
+        }
+
+
         public Dictionary<string, KeyValuePair<string, Type>> GetVehicleFieldsToUpdate(string i_License, eFieldGroup groupType)
         {
             Dictionary<string, KeyValuePair<string, Type>> vehicleFields = new Dictionary<string, KeyValuePair<string, Type>>();
@@ -126,7 +142,7 @@ namespace Ex03.GarageLogic
         }
 
 
-        protected VehicleInGarage GetVehicle(string i_License)
+        protected VehicleInGarage GetVehicleInGarage(string i_License)
         {
             return r_Vehicles[i_License];
         }
