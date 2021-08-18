@@ -67,19 +67,19 @@ namespace Ex03.ConsoleUI
             switch(typeName)
             {
                 case "String":
-                    valueToReturn = GetValueOfString(i_FieldType);
+                    valueToReturn = GetValueOfString();
                     break;
 
                 case "Int32":
-                    valueToReturn = GetValueOfInt(i_FieldType);
+                    valueToReturn = GetValueOfInt();
                     break;
 
                 case "Boolean":
-                    valueToReturn = GetValueOfBool(i_FieldType);
+                    valueToReturn = GetValueOfBool();
                     break;
 
                 case "Single":
-                    valueToReturn = GetValueOfFloat(i_FieldType);
+                    valueToReturn = GetValueOfFloat();
                     break;
 
                 case "Enum":
@@ -90,29 +90,135 @@ namespace Ex03.ConsoleUI
             return valueToReturn;
         }
 
-        private static object GetValueOfBool(Type i_FieldType)
+        private static object GetValueOfBool()
         {
-            throw new NotImplementedException();
+            bool validInput;
+            bool valueToReturn = false;
+
+            do
+            {
+                string stringFromUser = Console.ReadLine();
+
+                validInput = true;
+                stringFromUser = stringFromUser.ToLower();
+
+                switch(stringFromUser)
+                {
+                    case "y":
+                        valueToReturn = true;
+                        break;
+
+                    case "n":
+                        valueToReturn = false;
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid input.");
+                        validInput = false;
+                        break;
+                }
+            }
+            while (!validInput);
+
+            return valueToReturn;
         }
 
-        private static object GetValueOfEnum(Type i_FieldType)
+        private static int GetValueOfEnum(Type i_EnumType)
         {
-            throw new NotImplementedException();
+            Array enumValues = Enum.GetValues(i_EnumType);
+            string[] enumNames = i_EnumType.GetEnumNames();
+
+            for (int i = 1; i <= enumValues.Length; i++)
+            {
+                Console.WriteLine(@"{0}. {1}", i, enumNames[i - 1]);
+            }
+
+            int enumValueFromUser = GetNumberFromUserInRange(1, enumValues.Length);
+
+            return (int) enumValues.GetValue(enumValueFromUser - 1);
         }
 
-        private static object GetValueOfFloat(Type i_FieldType)
+        private static float GetValueOfFloat()
         {
-            throw new NotImplementedException();
+            float valueToReturn;
+            bool validInput;
+
+            do
+            {
+                string userInput = Console.ReadLine();
+                validInput = float.TryParse(userInput, out valueToReturn);
+                if (!validInput)
+                {
+                    Console.WriteLine("Invalid input.");
+                }
+            }
+            while (!validInput);
+
+            return valueToReturn;
         }
 
-        private static object GetValueOfInt(Type i_FieldType)
+        private static int GetValueOfInt()
         {
-            throw new NotImplementedException();
+            int valueToReturn;
+            bool validInput;
+
+            do
+            {
+                string userInput = Console.ReadLine();
+                validInput = int.TryParse(userInput, out valueToReturn);
+                if (!validInput)
+                {
+                    Console.WriteLine("Invalid input.");
+                }
+            }
+            while (!validInput);
+
+            return valueToReturn;
         }
 
-        private static object GetValueOfString(Type i_FieldType)
+        private static string GetValueOfString()
         {
-            throw new NotImplementedException();
+            string userInput;
+            bool validInput;
+
+            do
+            {
+                userInput = Console.ReadLine();
+                validInput = userInput != null && userInput.Equals(string.Empty);
+                if (!validInput)
+                {
+                    Console.WriteLine("Invalid Input.");
+                }
+            }
+            while (!validInput);
+
+            return userInput;
+        }
+
+        public static int GetNumberFromUserInRange(int i_Min, int i_Max)
+        {
+            bool inputIsValid;
+            int numberFromUser;
+
+            do
+            {
+                inputIsValid = true;
+                numberFromUser = GetValueOfInt();
+
+                if (!isNumberInRange(numberFromUser, i_Min, i_Max))
+                {
+                    Console.WriteLine($"Input must be between {i_Min} and {i_Max}.");
+                    inputIsValid = false;
+                }
+            }
+            while (!inputIsValid);
+
+            return numberFromUser;
+        }
+
+        private static bool isNumberInRange(int i_Number, int i_Min, int i_Max)
+        {
+            return i_Min <= i_Number && i_Number <= i_Max;
         }
     }
 }
