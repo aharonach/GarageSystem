@@ -9,13 +9,15 @@ namespace Ex03.GarageLogic
     {
         private string m_PersonName;
         private string m_Phone;
-        private eVehicleStatus m_Status;
+        private Garage.eVehicleStatus m_Status;
         private Vehicle m_Vehicle;
-        private Garage.eVehicleType m_Type;
 
-        public VehicleInGarage(string i_PersonName, string i_Phone, eVehicleStatus i_Status, Vehicle i_Vehicle)
+        public VehicleInGarage(string i_PersonName, string i_Phone, Vehicle i_Vehicle)
         {
-
+            PersonName = i_PersonName;
+            Phone = i_Phone;
+            Status = Garage.eVehicleStatus.InRepair;
+            Vehicle = i_Vehicle;
         }
 
         public string PersonName
@@ -30,7 +32,7 @@ namespace Ex03.GarageLogic
             set { m_Phone = value; }
         }
 
-        public eVehicleStatus Status
+        public Garage.eVehicleStatus Status
         {
             get { return m_Status; }
             set { m_Status = value; }
@@ -40,18 +42,6 @@ namespace Ex03.GarageLogic
         {
             get { return m_Vehicle; }
             private set { m_Vehicle = value; }
-        }
-
-        public Garage.eVehicleType Type
-        {
-            get { return m_Type; }
-        }
-        
-        public enum eVehicleStatus
-        {
-            InRepair,
-            Fixed,
-            Payed
         }
     }
 }

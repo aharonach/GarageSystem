@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 
 namespace Ex03.GarageLogic
 {
@@ -12,6 +13,12 @@ namespace Ex03.GarageLogic
         public Truck(string i_License, string i_Name) : base(i_License, i_Name, k_NumOfWheels, k_MaxWheelAirPressure)
         {
         }
+
+        public override Dictionary<string, PropertyInfo> GetFieldsToUpdate()
+        {
+            throw new System.NotImplementedException();
+        }
+
 
         public float MaxCarryingCapacity
         {

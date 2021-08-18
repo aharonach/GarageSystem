@@ -7,16 +7,6 @@ namespace Ex03.GarageLogic
 {
     public static class VehicleFactory
     {
-        //private static readonly Dictionary<eType, string> sr_Types = 
-        //    new Dictionary<eType, string>()
-        //     {
-        //         { eType.FuelCar, "Fuel Car" },
-        //         { eType.ElectricCar, "Electric Car" },
-        //         { eType.FuelMotorcycle, "Fuel Motorcycle" },
-        //         { eType.ElectricMotorcycle, "Electric Motorcycle" },
-        //         { eType.Truck, "Truck" }
-        //     };
-
         public static Vehicle Create(eType i_VehicleType, string i_License, string i_ModelName)
         {
             Vehicle createdVehicle = null;
@@ -47,9 +37,18 @@ namespace Ex03.GarageLogic
             return createdVehicle;
         }
 
-        public static Array GetAvailableTypes()
+        public static Dictionary<string, eType> GetAvailableTypes()
         {
-            return Enum.GetValues(typeof(eType));
+            Dictionary<string, eType> availableTypes = 
+                new Dictionary<string, eType>(5)
+                   {
+                       {"Fuel Car", eType.FuelCar},
+                       {"Electric Car", eType.ElectricCar},
+                       {"Fuel Motorcycle", eType.FuelMotorcycle},
+                       {"Electric Motorcycle", eType.ElectricMotorcycle},
+                       {"Truck", eType.Truck}
+                   };
+            return availableTypes;
         }
 
         public enum eType

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 
 namespace Ex03.GarageLogic
 {
@@ -11,6 +12,14 @@ namespace Ex03.GarageLogic
 
         protected Car(string i_License, string i_Name) : base(i_License, i_Name, k_NumOfWheels, k_MaxWheelAirPressure)
         {
+        }
+
+        public override Dictionary<string, PropertyInfo> GetFieldsToUpdate()
+        {
+            Dictionary<string, PropertyInfo> res = new Dictionary<string, PropertyInfo>();
+            res.Add("Color", GetType().GetProperty("Color"));
+            res.Add("Number Of Doors", GetType().GetProperty("NumOfDoors"));
+            return res;
         }
 
         public eColor Color

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace Ex03.GarageLogic
 {
@@ -37,6 +39,24 @@ namespace Ex03.GarageLogic
             }
 
             m_BatteryTime = Math.Min(m_BatteryTime + i_BatteryTimeToAdd, r_MaxBatteryTime);
+        }
+
+        public override Dictionary<string, object> GetFieldsValues()
+        {
+            Dictionary<string, object> fields = base.GetFieldsValues();
+            fields.Add("Max battery time", r_MaxBatteryTime);
+            fields.Add("Current battery time", BatteryTime);
+            return fields;
+        }
+
+        public override Dictionary<string, PropertyInfo> GetFieldsToUpdate()
+        {
+            Dictionary<string, PropertyInfo> fields = 
+                new Dictionary<string, PropertyInfo>() 
+                    { 
+                        {"Battery time", GetType().GetProperty("BatteryTime")},
+                    };
+            return fields;
         }
     }
 }

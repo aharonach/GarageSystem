@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace Ex03.GarageLogic
 {
@@ -22,7 +24,12 @@ namespace Ex03.GarageLogic
 
         public override float EnergyPercent
         {
-            get { return m_FuelAmount / r_MaxFuelAmount; }
+            get { return m_FuelAmount / r_MaxFuelAmount * 100; }
+        }
+
+        public eFuelType FuelType
+        {
+            get { return r_FuelType; }
         }
 
         public float FuelAmount
@@ -51,6 +58,26 @@ namespace Ex03.GarageLogic
             }
 
             m_FuelAmount = tempFuelAmount;
+        }
+
+        public override Dictionary<string, object> GetFieldsValues()
+        {
+            Dictionary<string, object> fields = base.GetFieldsValues();
+            fields.Add("Fuel type", FuelType);
+            fields.Add("Max fuel amount", r_MaxFuelAmount);
+            fields.Add("Current fuel amount", FuelAmount);
+            return fields;
+        }
+
+        public override Dictionary<string, PropertyInfo> GetFieldsToUpdate()
+        {
+            Dictionary<string, PropertyInfo> fields =
+                new Dictionary<string, PropertyInfo>()
+                    {
+                        {"Fuel type", GetType().GetProperty("FuelType")},
+                        {"Fuel amount", GetType().GetProperty("FuelAmount")},
+                    };
+            return fields;
         }
 
         public enum eFuelType

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Ex03.GarageLogic
 {
@@ -32,15 +33,15 @@ namespace Ex03.GarageLogic
             get { return r_ModelName; }
         }
 
-        protected List<Wheel> Wheels
+        public List<Wheel> Wheels
         {
             get { return r_Wheels; }
         }
         
-        protected Tank VehicleTank
+        public Tank VehicleTank
         {
             get { return m_Tank; }
-            set { m_Tank = value; }
+            protected set { m_Tank = value; }
         }
 
         protected void AddWheel(string i_Manufacturer, float i_MaxAirPressure, float i_AirPressure)
@@ -64,69 +65,66 @@ namespace Ex03.GarageLogic
             return License.GetHashCode();
         }
 
-        public Dictionary<string, List<PropertyInfo>> GetAvailableProperties()
+        public abstract Dictionary<string, PropertyInfo> GetFieldsToUpdate();
+
+        public Dictionary<string, PropertyInfo> GetFieldsToUpdateOfWheels()
         {
+            Dictionary<string, PropertyInfo> fields = new Dictionary<string, PropertyInfo>();
 
-            Dictionary<string, List<PropertyInfo>> allProperties = new Dictionary<string, List<PropertyInfo>>();
-
-            List<PropertyInfo> fields = new List<PropertyInfo>();
-            allProperties.Add("Fields", fields);
-            List<PropertyInfo> wheels = new List<PropertyInfo>();
-            allProperties.Add("Wheels", wheels);
-            List<PropertyInfo> tank = new List<PropertyInfo>();
-            allProperties.Add("Tank", tank);
-
-
-            // Add only properties that have a setter so it can be assigned next time.
-            foreach (PropertyInfo property in GetType().GetProperties())
+            for (int i = 0; i < r_NumOfWheels; i++)
             {
-                if (property.CanWrite)
-                {
-                    fields.Add(property);
-                }
+                fields.Add($"Wheel {i + 1} Manufacturer", Wheels[i].GetType().GetProperty("Manufacturer"));
+                fields.Add($"Wheel {i + 1} Current Air Pressure", Wheels[i].GetType().GetProperty("AirPressure"));
             }
 
-            // Add available fields for this vehicle's wheels.
-            foreach (Wheel wheel in Wheels)
-            {
-                foreach (PropertyInfo wheelProperty in wheel.GetType().GetProperties())
-                {
-                    if (wheelProperty.CanWrite)
-                    {
-                        wheels.Add(wheelProperty);
-                    }
-                }
-            }
-
-            // Add only properties that have a setter so it can be assigned next time.
-            foreach (PropertyInfo property in VehicleTank.GetType().GetProperties())
-            {
-                if (property.CanWrite)
-                {
-                    tank.Add(property);
-                }
-            }
-
-            return allProperties;
+            return fields;
         }
 
-        public void UpdateFields(Dictionary<string, Dictionary<string, object>> i_ValuesToUpdate)
+        public Dictionary<string, PropertyInfo> GetFieldsToUpdateOfTank()
         {
+            return VehicleTank.GetFieldsToUpdate();
+        }
 
-            Dictionary<string, object> fields = i_ValuesToUpdate["Fields"];
-            foreach(KeyValuePair<string, object> field in fields)
+        public Dictionary<string, object> GetFieldsWithValues()
+        {
+            Dictionary<string, object> fields = new Dictionary<string, object>();
+
+            // Add basic properties values
+            fields.Add("License number", License);
+            fields.Add("Model name", ModelName);
+
+            // Add wheels properties values
+            for (int i = 0; i < r_NumOfWheels; i++)
             {
-                GetType().GetProperty(field.Key).SetValue(this, field.Value, null);
-
+                fields.Add($"Wheel {i + 1} Manufacturer", Wheels[i].Manufacturer);
+                fields.Add($"Wheel {i + 1} Maximum Air Pressure", Wheels[i].MaxAirPressure);
+                fields.Add($"Wheel {i + 1} Current Air Pressure", Wheels[i].AirPressure);
             }
 
+            // Add tank properties values
+            foreach (KeyValuePair<string, object> kvp in VehicleTank.GetFieldsValues())
+            {
+                fields.Add(kvp.Key, kvp.Value);
+            }
 
+            // Add custom properties values of child classes
+            foreach (KeyValuePair<string, PropertyInfo> kvp in GetFieldsToUpdate())
+            {
+                fields.Add(kvp.Key, kvp.Value.GetValue(this, null));
+            }
 
+            return fields;
+        }
 
+        public void UpdatePropertyValue(KeyValuePair<string, object> i_PropertyValuePair)
+        {
+            Type obj = GetType();
+            obj.GetProperty(i_PropertyValuePair.Key).SetValue(obj, i_PropertyValuePair.Value, null);
         }
 
         public abstract class Tank
         {
+
             public abstract eType Type
             {
                 get;
@@ -136,6 +134,20 @@ namespace Ex03.GarageLogic
             {
                 get;
             }
+
+            public virtual Dictionary<string, object> GetFieldsValues()
+            {
+                Dictionary<string, object> fields = 
+                    new Dictionary<string, object>()
+                    {
+                        {"Tank type", Type},
+                        {"Energy (%)", EnergyPercent},
+                    };
+
+                return fields;
+            }
+
+            public abstract Dictionary<string, PropertyInfo> GetFieldsToUpdate();
 
             public enum eType
             {
