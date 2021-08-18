@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ex03.GarageLogic
 {
-    public static class VehicleFactory
+    public static class VehicleCreator
     {
         public static Vehicle Create(eType i_VehicleType, string i_License, string i_ModelName)
         {
@@ -40,12 +40,12 @@ namespace Ex03.GarageLogic
         public static Dictionary<string, eType> GetAvailableTypes()
         {
             Dictionary<string, eType> availableTypes = 
-                new Dictionary<string, eType>(5) 
+                new Dictionary<string, eType> 
                 {
                     { "Fuel Car", eType.FuelCar },
-                    { "Electric Car", eType.ElectricCar },
+                    { "ElectricTank Car", eType.ElectricCar },
                     { "Fuel Motorcycle", eType.FuelMotorcycle },
-                    { "Electric Motorcycle", eType.ElectricMotorcycle },
+                    { "ElectricTank Motorcycle", eType.ElectricMotorcycle },
                     { "Truck", eType.Truck }
                 };
             return availableTypes;

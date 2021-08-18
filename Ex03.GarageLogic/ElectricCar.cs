@@ -12,7 +12,7 @@ namespace Ex03.GarageLogic
         public ElectricCar(string i_License, string i_ModelName) 
             : base (i_License, i_ModelName)
         {
-            VehicleTank = new Electric(k_MaxBatteryInHour, 0);
+            Tank = new ElectricTank(k_MaxBatteryInHour, 0);
         }
     }
 }

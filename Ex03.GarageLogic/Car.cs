@@ -5,8 +5,8 @@ namespace Ex03.GarageLogic
 {
     public abstract class Car : Vehicle
     {
-        protected const float k_MaxWheelAirPressure = 32;
-        protected const int k_NumOfWheels = 4;
+        private const float k_MaxWheelAirPressure = 32;
+        private const int k_NumOfWheels = 4;
         private eColor m_Color;
         private eDoors m_NumOfDoors;
 

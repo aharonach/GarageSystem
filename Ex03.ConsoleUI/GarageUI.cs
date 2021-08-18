@@ -1,58 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Ex03.GarageLogic;
 
 namespace Ex03.ConsoleUI
 {
     class GarageUI
     {
-        private const int k_MinLicenseNumberLength = 7;
-        private const int k_MaxLicenseNumberLength = 8;
         private readonly Garage r_Garage = new Garage();
         private readonly Menu r_Menu = new Menu();
-
-        public GarageUI()
-        {
-            initMenu();
-        }
-
-        public Garage Garage
+        
+        private Garage Garage
         {
             get { return r_Garage; }
+        }
+
+        private Menu Menu
+        {
+            get { return r_Menu; }
         }
 
         public void Run()
         {
             Menu.eActionType optionActionType;
+
             do
             {
-                r_Menu.printMenu();
-
-                int userInput = getMenuChoice(r_Menu.Length);
-                optionActionType = r_Menu.getActionOfOption(userInput);
-
+                Menu.printMenu();
+                int userInput = getMenuChoice(Menu.Length);
+                optionActionType = Menu.getActionOfOption(userInput);
                 doAction(optionActionType);
             } 
             while (optionActionType != Menu.eActionType.Exit);
         }
 
-        private void initMenu()
-        {
-            r_Menu.addOption("Insert new car", Menu.eActionType.InsertCar);
-            r_Menu.addOption("Show cars", Menu.eActionType.ShowCars);
-            r_Menu.addOption("Inflate air to max", Menu.eActionType.InflateAir);
-            r_Menu.addOption("Refuel a car", Menu.eActionType.Refuel);
-            r_Menu.addOption("Charge a car", Menu.eActionType.Charge);
-            r_Menu.addOption("View car details", Menu.eActionType.ViewCar);
-            r_Menu.addOption("Exit", Menu.eActionType.Exit);
-        }
-
         private int getMenuChoice(int i_NumberOfOptions)
         {
-            Console.Write("Enter your choice: ");
-            return InputUtils.GetNumberFromUserInRange(1, i_NumberOfOptions);
+            do
+            {
+                try
+                {
+                    Console.Write("\nEnter your choice: ");
+                    return InputUtils.GetNumberFromUserInRange(1, i_NumberOfOptions);
+                }
+                catch (ValueOutOfRangeException exception)
+                {
+                    outOfRangeMessage(exception);
+                }
+            }
+            while(true);
         }
 
         private void doAction(Menu.eActionType option)
@@ -60,133 +55,268 @@ namespace Ex03.ConsoleUI
             switch (option)
             {
                 case Menu.eActionType.InsertCar:
-                    insertCar();
-                    Console.WriteLine("Finish InsertCar");
+                    printHeader("Insert New Vehicle");
+                    insertVehicle();
                     break;
 
-                case Menu.eActionType.ShowCars:
-                    showCars();
-                    Console.WriteLine("ShowCars");
+                case Menu.eActionType.ShowVehicles:
+                    printHeader("Show All Vehicles");
+                    showAllVehicles();
+                    break;
+
+                case Menu.eActionType.ChangeStatus:
+                    printHeader("Change Vehicle Status");
+                    updateVehicleStatus();
                     break;
 
                 case Menu.eActionType.InflateAir:
-                    Console.WriteLine("InflateAir");
+                    printHeader("Inflate Air in Vehicle's Wheels");
                     break;
 
                 case Menu.eActionType.Refuel:
-                    Console.WriteLine("Refuel");
+                    printHeader("Refuel Vehicle");
+                    refuelVehicle();
                     break;
 
                 case Menu.eActionType.Charge:
-                    Console.WriteLine("Charge");
+                    printHeader("Charge Electric Vehicle");
+                    rechargeVehicle();
                     break;
 
-                case Menu.eActionType.ViewCar:
-                    viewCar();
-                    Console.WriteLine("viewCar");
+                case Menu.eActionType.ViewVehicle:
+                    printHeader("View Vehicle");
+                    viewSingleVehicle();
                     break;
 
                 case Menu.eActionType.Exit:
-                    Console.WriteLine("Bye");
+                    Console.WriteLine("Goodbye!");
                     break;
             }
         }
 
-        private void insertCar()
+        private void insertVehicle()
         {
-            string license = InputUtils.GetLicenseNumberFromUser(k_MinLicenseNumberLength, k_MaxLicenseNumberLength);
-
-            if(Garage.IsVehicleExistsInGarage(license))
-            {
-                Garage.UpdateVehicleInGarageStatus(license, Garage.eVehicleStatus.InRepair);
-                Console.WriteLine("Vehicle already exists in the garage. status of vehicle changed to 'In Repair'.");
-            }
-            else
-            {
-                Dictionary<string, KeyValuePair<string, Type>> fieldsToUpdate;
-                Dictionary<string, object> additionalFields;
-                string name, phone, model;
-
-                Console.WriteLine("Enter your name:");
-                name = InputUtils.GetValueOfString();
-
-                Console.WriteLine("Enter your phone number:");
-                phone = InputUtils.GetValueOfString();
-
-                Console.WriteLine("Choose vehicle type:");
-                VehicleFactory.eType vehicleType = (VehicleFactory.eType)InputUtils.GetValueOfEnum(VehicleFactory.eType.ElectricCar.GetType());
-
-                Console.WriteLine("Enter Model name:");
-                model = InputUtils.GetValueOfString();
-
-                Garage.AddVehicle(name, phone, vehicleType, license, model);
-
-                askAndUpdateVehicleFieldsByCategory(license, Garage.eFieldGroup.Additional);
-                askAndUpdateVehicleFieldsByCategory(license, Garage.eFieldGroup.Wheel);
-                askAndUpdateVehicleFieldsByCategory(license, Garage.eFieldGroup.Tank);
-            }
-        }
-
-        private void askAndUpdateVehicleFieldsByCategory(string i_License, Garage.eFieldGroup i_Category)
-        {
-            Dictionary<string, KeyValuePair<string, Type>> fieldsToUpdate = Garage.GetVehicleFieldsToUpdate(i_License, i_Category);
-            Dictionary<string, object> additionalFields = new Dictionary<string, object>();
-            
-            foreach (KeyValuePair<string, KeyValuePair<string, Type>> field in fieldsToUpdate)
-            {
-                KeyValuePair<string, Type> propertyInfo = field.Value;
-                Console.WriteLine($"Enter value for {field.Key}:");
-                object value = InputUtils.GetParameterByType(propertyInfo.Value);
-                additionalFields.Add(propertyInfo.Key, value);
-            }
-            Garage.UpdateVehicleFields(i_License, additionalFields, i_Category);
-        }
-
-        private void viewCar()
-        {
-            string license = InputUtils.GetLicenseNumberFromUser(k_MinLicenseNumberLength, k_MaxLicenseNumberLength);
-
             try
             {
-                Dictionary<string, object> values = Garage.GetVehicleFieldsAndValues(license);
+                string license = InputUtils.GetLicenseNumberFromUser();
 
-                foreach (KeyValuePair<string, object> kvp in values)
+                if(Garage.IsVehicleExistsInGarage(license))
                 {
-                    Console.WriteLine($"{kvp.Key} : {kvp.Value}");
+                    Garage.UpdateVehicleInGarageStatus(license, Garage.eVehicleStatus.InRepair);
+                    Console.WriteLine(
+                        @"Vehicle already exists in the garage. It's status changed to {0}.",
+                        Garage.eVehicleStatus.InRepair);
+                }
+                else
+                {
+                    Console.WriteLine("\nEnter your name:");
+                    string personName = InputUtils.GetStringFromUser();
+
+                    Console.WriteLine("\nEnter your phone number:");
+                    string phone = InputUtils.GetStringFromUser();
+
+                    Console.WriteLine("\nChoose vehicle's type:");
+                    VehicleCreator.eType vehicleType =
+                        (VehicleCreator.eType)InputUtils.GetEnumValueFromUser(typeof(VehicleCreator.eType));
+
+                    Console.WriteLine("\nEnter Model name:");
+                    string modelName = InputUtils.GetStringFromUser();
+
+                    Garage.AddVehicle(personName, phone, vehicleType, license, modelName);
+
+                    foreach (Garage.eFieldGroup fieldGroup in Enum.GetValues(typeof(Garage.eFieldGroup)))
+                    {
+                        askAndUpdateVehicleFieldsByCategory(license, fieldGroup);
+                    }
                 }
             }
-            catch (ArgumentException exception)
+            catch(FormatException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+            catch(ValueOutOfRangeException exception)
+            {
+                outOfRangeMessage(exception);
+            }
+            catch(ArgumentException exception)
             {
                 Console.WriteLine(exception.Message);
             }
         }
 
-        private void showCars()
+        private void askAndUpdateVehicleFieldsByCategory(string i_License, Garage.eFieldGroup i_FieldGroup)
         {
-            Dictionary<string, Garage.eVehicleStatus> vehicleStatus;
+            Dictionary<string, KeyValuePair<string, Type>> fieldsToUpdate =
+                Garage.GetVehicleFieldsToUpdate(i_License, i_FieldGroup);
 
-            Console.WriteLine("Do you want to filter by status?");
-            bool wantsToFilter = InputUtils.GetYesOrNoFromUser();
+            printFieldGroupHeader(i_FieldGroup);
 
-            if(wantsToFilter)
+            do
             {
-                vehicleStatus = Garage.GetVehiclesLicenses(InputUtils.ChooseVehicleStatus());
+                try
+                {
+                    Dictionary<string, object> additionalFields = new Dictionary<string, object>();
+
+                    foreach(KeyValuePair<string, KeyValuePair<string, Type>> field in fieldsToUpdate)
+                    {
+                        KeyValuePair<string, Type> propertyInfo = field.Value;
+                        Console.WriteLine($"\nEnter {field.Key}:");
+                        object valueToUpdate = InputUtils.GetParameterValueByType(propertyInfo.Value);
+                        additionalFields.Add(propertyInfo.Key, valueToUpdate);
+                    }
+
+                    Garage.UpdateVehicleFields(i_License, additionalFields, i_FieldGroup);
+                    break;
+                }
+                catch (FormatException exception)
+                {
+                    Console.WriteLine(exception.Message);
+                }
+                catch (ValueOutOfRangeException exception)
+                {
+                    outOfRangeMessage(exception);
+                }
+                catch(ArgumentException exception)
+                {
+                    Console.WriteLine(exception.Message);
+                }
             }
-            else
-            {
-                vehicleStatus = Garage.GetVehiclesLicenses();
-            }
+            while(true);
+        }
 
-            foreach(KeyValuePair<string, Garage.eVehicleStatus> kvp in vehicleStatus)
+        private void viewSingleVehicle()
+        {
+            try
             {
-                Console.WriteLine($"Vehicle {kvp.Key}, Status: {kvp.Value}");
+                string license = InputUtils.GetLicenseNumberFromUser();
+                Dictionary<string, object> values = Garage.GetVehicleFieldsAndValues(license);
+
+                foreach(KeyValuePair<string, object> kvp in values)
+                {
+                    Console.WriteLine($"{kvp.Key} : {kvp.Value}");
+                }
+            }
+            catch(FormatException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+            catch(ArgumentException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+        }
+
+        private void showAllVehicles()
+        {
+            try
+            {
+                Console.WriteLine("Do you want to filter by status?");
+                bool wantsToFilter = InputUtils.GetYesOrNoFromUser();
+
+                Dictionary<string, Garage.eVehicleStatus> vehicleStatus =
+                    wantsToFilter
+                        ? Garage.GetVehiclesLicenses(InputUtils.ChooseVehicleStatus())
+                        : Garage.GetVehiclesLicenses();
+
+                foreach(KeyValuePair<string, Garage.eVehicleStatus> kvp in vehicleStatus)
+                {
+                    Console.WriteLine($"Vehicle {kvp.Key}, Status: {kvp.Value}");
+                }
+            }
+            catch(FormatException exception)
+            {
+                Console.WriteLine(exception.Message);
             }
         }
 
         private void updateVehicleStatus()
         {
-            string license = InputUtils.GetLicenseNumberFromUser(k_MinLicenseNumberLength, k_MaxLicenseNumberLength);
-            Garage.UpdateStatusOfVehicle(license, InputUtils.ChooseVehicleStatus());
+            try
+            {
+                string license = InputUtils.GetLicenseNumberFromUser();
+                Garage.UpdateVehicleInGarageStatus(license, InputUtils.ChooseVehicleStatus());
+            }
+            catch(ArgumentException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+        }
+
+        private void refuelVehicle()
+        {
+            try
+            {
+                string license = InputUtils.GetLicenseNumberFromUser();
+
+                Console.WriteLine("\nChoose fuel type: ");
+                FuelTank.eFuelType fuelType = (FuelTank.eFuelType)InputUtils.GetEnumValueFromUser(typeof(FuelTank.eFuelType));
+
+                Console.WriteLine("\nHow much fuel to add? ");
+                float amount = InputUtils.GetFloatFromUser();
+
+                Garage.RefuelVehicle(license, fuelType, amount);
+            }
+            catch(ArgumentException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+            catch(ValueOutOfRangeException exception)
+            {
+                outOfRangeMessage(exception);
+            }
+        }
+
+        private void rechargeVehicle()
+        {
+            try
+            {
+                string license = InputUtils.GetLicenseNumberFromUser();
+
+                Console.WriteLine("How much battery time to add? ");
+                float amount = InputUtils.GetFloatFromUser();
+
+                Garage.RechargeVehicle(license, amount);
+            }
+            catch (ArgumentException exception)
+            {
+                Console.WriteLine($"Error: {exception.Message}");
+            }
+            catch (ValueOutOfRangeException exception)
+            {
+                outOfRangeMessage(exception);
+            }
+        }
+
+        private void outOfRangeMessage(ValueOutOfRangeException i_ValueOutOfRangeException)
+        {
+            Console.WriteLine(i_ValueOutOfRangeException.Message);
+            Console.WriteLine(
+                $"Min value: {i_ValueOutOfRangeException.MinValue}, Max value: {i_ValueOutOfRangeException.MaxValue}.");
+        }
+
+        private void printHeader(string i_HeaderMessage)
+        {
+            Console.WriteLine("\n===========");
+            Console.WriteLine(i_HeaderMessage);
+            Console.WriteLine("===========\n");
+        }
+
+        private void printFieldGroupHeader(Garage.eFieldGroup i_FieldGroup)
+        {
+            Console.WriteLine("\n-----------");
+            switch(i_FieldGroup)
+            {
+                case Garage.eFieldGroup.Additional:
+                    Console.WriteLine("Additional fields");
+                    break;
+                case Garage.eFieldGroup.Wheel:
+                    Console.WriteLine("Wheel fields");
+                    break;
+                case Garage.eFieldGroup.Tank:
+                    Console.WriteLine("Tank fields");
+                    break;
+            }
+            Console.WriteLine("-----------\n");
         }
     }
 }

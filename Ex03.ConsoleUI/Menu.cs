@@ -1,36 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Ex03.ConsoleUI
 {
-
-    class Menu
+    internal class Menu
     {
-        private List<MenuOption> m_options = new List<MenuOption>(10);
+        private readonly List<MenuOption> r_Options = new List<MenuOption>(10);
+
+        public Menu()
+        {
+            initMenu();
+        }
+
+        private void initMenu()
+        {
+            addOption("Insert new car", Menu.eActionType.InsertCar);
+            addOption("Show cars", Menu.eActionType.ShowVehicles);
+            addOption("Inflate air to max", Menu.eActionType.InflateAir);
+            addOption("Refuel a car", Menu.eActionType.Refuel);
+            addOption("Charge a car", Menu.eActionType.Charge);
+            addOption("View car details", Menu.eActionType.ViewVehicle);
+            addOption("Exit", Menu.eActionType.Exit);
+        }
 
         public int Length
         {
-            get { return m_options.Count; }
+            get { return r_Options.Count; }
         }
 
         public void addOption(string i_title, eActionType i_ActionType)
         {
-            m_options.Add(new MenuOption(i_title, i_ActionType));
+            r_Options.Add(new MenuOption(i_title, i_ActionType));
 
         }
 
         public eActionType getActionOfOption(int optionNumber)
         {
-            return m_options[optionNumber - 1].ActionType;
+            return r_Options[optionNumber - 1].ActionType;
         }
 
         public void printMenu() {
             Console.WriteLine("Menu:");
             for(int i=1; i <= Length; i++)
             {
-                Console.WriteLine(i + ". " + m_options[i - 1].Title);
+                Console.WriteLine(i + ". " + r_Options[i - 1].Title);
             }
             Console.WriteLine();
         }
@@ -58,13 +71,13 @@ namespace Ex03.ConsoleUI
         public enum eActionType
         {
             InsertCar,
-            ShowCars,
+            ShowVehicles,
+            ChangeStatus,
             InflateAir,
             Refuel,
             Charge,
-            ViewCar,
+            ViewVehicle,
             Exit
         }
-
     }
 } 

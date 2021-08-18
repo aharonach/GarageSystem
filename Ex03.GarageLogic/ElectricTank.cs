@@ -4,12 +4,12 @@ using System.Reflection;
 
 namespace Ex03.GarageLogic
 {
-    public class Electric : Tank
+    public class ElectricTank : Tank
     {
         private readonly float r_MaxBatteryTime;
         private float m_BatteryTime;
 
-        public Electric(float i_MaxBatteryTime, float i_BatteryTime)
+        public ElectricTank(float i_MaxBatteryTime, float i_BatteryTime)
         {
             r_MaxBatteryTime = i_MaxBatteryTime;
             m_BatteryTime = i_BatteryTime;
@@ -28,21 +28,33 @@ namespace Ex03.GarageLogic
         public float BatteryTime
         {
             get { return m_BatteryTime; }
-            set { Recharge(value); }
+            set
+            {
+                try
+                {
+                    Recharge(value);
+                }
+                catch(ValueOutOfRangeException exception)
+                {
+                    throw;
+                }
+            }
         }
 
         public void Recharge(float i_BatteryTimeToAdd)
         {
+            float maxAmountPossible = r_MaxBatteryTime - m_BatteryTime;
+
             if (i_BatteryTimeToAdd < 0)
             {
-                throw new ValueOutOfRangeException("Invalid battery time amount.", 0, r_MaxBatteryTime - m_BatteryTime);
+                throw new ValueOutOfRangeException("Invalid battery time amount.", 0, maxAmountPossible);
             }
 
             float tempBatteryTimeAmount = m_BatteryTime + i_BatteryTimeToAdd;
 
             if (tempBatteryTimeAmount > r_MaxBatteryTime)
             {
-                throw new ValueOutOfRangeException("Max amount reached.", 0, r_MaxBatteryTime - m_BatteryTime);
+                throw new ValueOutOfRangeException("Max amount reached.", 0, maxAmountPossible);
             }
 
             m_BatteryTime = tempBatteryTimeAmount;
@@ -58,12 +70,10 @@ namespace Ex03.GarageLogic
 
         public override Dictionary<string, PropertyInfo> GetFieldsToUpdate()
         {
-            Dictionary<string, PropertyInfo> fields = 
-                new Dictionary<string, PropertyInfo>() 
-                    { 
-                        {$"Battery time (Max is {r_MaxBatteryTime})", GetType().GetProperty("BatteryTime")}
-                    };
-            return fields;
+            return new Dictionary<string, PropertyInfo>
+                   {
+                       { $"Battery time (Max is {r_MaxBatteryTime})", GetType().GetProperty("BatteryTime") }
+                   };
         }
     }
 }

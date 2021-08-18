@@ -10,126 +10,84 @@ namespace Ex03.ConsoleUI
     {
         public static int GetNumberFromUser()
         {
-            bool successIntParse;
-            int numberFromUser;
-
-            do
+            string stringFromUser = GetStringFromUser();
+                
+            if (!int.TryParse(stringFromUser, out int numberFromUser))
             {
-                string stringFromUser = Console.ReadLine();
-                successIntParse = int.TryParse(stringFromUser, out numberFromUser);
-
-                if (!successIntParse)
-                {
-                    Console.WriteLine("Invalid input.");
-                }
+                throw new FormatException("Invalid number input.");
             }
-            while (!successIntParse);
 
             return numberFromUser;
         }
 
         public static int GetNumberFromUserInRange(int i_Min, int i_Max)
         {
-            bool inputIsValid = true;
-            int numberFromUser;
+            int numberFromUser = GetNumberFromUser();
 
-            do
+            if (!isNumberInRange(numberFromUser, i_Min, i_Max))
             {
-                inputIsValid = true;
-                numberFromUser = GetNumberFromUser();
-
-                if (!isNumberInRange(numberFromUser, i_Min, i_Max))
-                {
-                    Console.WriteLine($"Input must be between {i_Min} and {i_Max}.");
-                    inputIsValid = false;
-                }
+                throw new ValueOutOfRangeException("Number is not in range.", i_Min, i_Max);
             }
-            while (!inputIsValid);
 
             return numberFromUser;
         }
 
         public static bool GetYesOrNoFromUser()
         {
-            bool validInput;
-            bool answer = false;
+            bool answer;
 
             Console.Write("(y - Yes, n - No): ");
+            string stringFromUser = GetStringFromUser().ToLower();
 
-            do
+            switch(stringFromUser)
             {
-                string stringFromUser = Console.ReadLine();
-
-                validInput = true;
-                stringFromUser = stringFromUser.ToLower();
-
-                if (stringFromUser.Equals("y"))
-                {
+                case "y":
                     answer = true;
-                }
-                else if (stringFromUser.Equals("n"))
-                {
+                    break;
+                case "n":
                     answer = false;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid input.");
-                    validInput = false;
-                }
+                    break;
+                default:
+                    throw new FormatException("Invalid answer.");
             }
-            while (!validInput);
 
             return answer;
         }
 
         public static Garage.eVehicleStatus ChooseVehicleStatus()
         {
-            Console.WriteLine("Choose status: ");
-            return (Garage.eVehicleStatus) GetValueOfEnum(typeof(Garage.eVehicleStatus));
+            Console.WriteLine("\nChoose status: ");
+            return (Garage.eVehicleStatus) GetEnumValueFromUser(typeof(Garage.eVehicleStatus));
         }
 
-        public static string GetLicenseNumberFromUser(int minLength, int maxLength)
+        public static string GetLicenseNumberFromUser()
         {
-            bool inputIsValid;
-            string stringFromUser;
-
             Console.WriteLine("Enter license number: ");
+            string stringFromUser = GetStringFromUser();
 
-            do
+            if (!Validations.IsNumeric(stringFromUser))
             {
-                inputIsValid = true;
-
-                stringFromUser = Console.ReadLine();
-                bool allCharsAreDigits = stringFromUser.All(Char.IsDigit);
-                bool lengthIsCorrect = isNumberInRange(stringFromUser.Length, minLength, maxLength);
-
-                inputIsValid = allCharsAreDigits && lengthIsCorrect;
-
-                if (!inputIsValid)
-                {
-                    Console.WriteLine("Invalid input.");
-                }
+                throw new FormatException("License number should contain only digits.");
             }
-            while (!inputIsValid);
 
             return stringFromUser;
         }
 
-        public static object GetParameterByType(Type i_FieldType)
+        public static object GetParameterValueByType(Type i_FieldType)
         {
             string typeName = i_FieldType.Name;
             object valueToReturn = null;
 
             if(i_FieldType.IsEnum)
             {
-                valueToReturn = GetValueOfEnum(i_FieldType);
+                valueToReturn = GetEnumValueFromUser(i_FieldType);
             }
             else
             {
                 switch (typeName)
                 {
                     case "String":
-                        valueToReturn = GetValueOfString();
+                        valueToReturn = GetStringFromUser();
                         break;
 
                     case "Int32":
@@ -141,7 +99,7 @@ namespace Ex03.ConsoleUI
                         break;
 
                     case "Single":
-                        valueToReturn = GetValueOfFloat();
+                        valueToReturn = GetFloatFromUser();
                         break;
                 }
             }
@@ -149,56 +107,44 @@ namespace Ex03.ConsoleUI
             return valueToReturn;
         }
 
-        public static int GetValueOfEnum(Type i_EnumType)
+        public static int GetEnumValueFromUser(Type i_EnumType)
         {
             Array enumValues = Enum.GetValues(i_EnumType);
             string[] enumNames = i_EnumType.GetEnumNames();
 
+            // Print enum values to the user to choose from
             for (int i = 1; i <= enumValues.Length; i++)
             {
                 Console.WriteLine(@"{0}. {1}", i, enumNames[i - 1]);
             }
 
+            Console.Write("Your choose: ");
             int enumValueFromUser = GetNumberFromUserInRange(1, enumValues.Length);
 
             return (int)enumValues.GetValue(enumValueFromUser - 1);
         }
-
-        public static float GetValueOfFloat()
+        
+        public static float GetFloatFromUser()
         {
-            float valueToReturn;
-            bool validInput;
+            string userInput = GetStringFromUser();
 
-            do
+            if (!float.TryParse(userInput, out float valueToReturn))
             {
-                string userInput = Console.ReadLine();
-                validInput = float.TryParse(userInput, out valueToReturn);
-                if (!validInput)
-                {
-                    Console.WriteLine("Invalid input.");
-                }
+                throw new FormatException("Invalid number");
             }
-            while (!validInput);
 
             return valueToReturn;
         }
 
-        public static string GetValueOfString()
+        public static string GetStringFromUser()
         {
-            string userInput;
-            bool validInput;
+            string userInput = Console.ReadLine();
 
-            do
+            if (!(userInput != null && !userInput.Equals(string.Empty)))
             {
-                userInput = Console.ReadLine();
-                validInput = userInput != null && !userInput.Equals(string.Empty);
-                if (!validInput)
-                {
-                    Console.WriteLine("Invalid Input.");
-                }
+                throw new FormatException("Invalid string input.");
             }
-            while (!validInput);
-
+            
             return userInput;
         }
 

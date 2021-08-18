@@ -4,13 +4,13 @@ using System.Reflection;
 
 namespace Ex03.GarageLogic
 {
-    public class Fuel : Tank
+    public class FuelTank : Tank
     {
         private readonly eFuelType r_FuelType;
         private readonly float r_MaxFuelAmount;
         private float m_FuelAmount;
 
-        public Fuel(eFuelType i_FuelType, float i_MaxFuelAmount, float i_FuelAmount)
+        public FuelTank(eFuelType i_FuelType, float i_MaxFuelAmount, float i_FuelAmount)
         {
             r_FuelType = i_FuelType;
             r_MaxFuelAmount = i_MaxFuelAmount;
@@ -35,14 +35,30 @@ namespace Ex03.GarageLogic
         public float FuelAmount
         {
             get { return m_FuelAmount; }
-            set { Refuel(value, r_FuelType); }
+            set
+            {
+                try
+                {
+                    Refuel(r_FuelType, value);
+                }
+                catch(ValueOutOfRangeException exception)
+                {
+                    throw;
+                }
+                catch (ArgumentException exception)
+                {
+                    throw;
+                }
+            }
         }
 
-        public void Refuel(float i_FuelToAdd, eFuelType i_FuelType)
+        public void Refuel(eFuelType i_FuelType, float i_FuelToAdd)
         {
+            float maxAmountPossible = r_MaxFuelAmount - m_FuelAmount;
+
             if (i_FuelToAdd < 0)
             {
-                throw new ValueOutOfRangeException("Invalid fuel amount.", 0, r_MaxFuelAmount - m_FuelAmount);
+                throw new ValueOutOfRangeException("Invalid fuel amount.", 0, maxAmountPossible);
             }
 
             if (i_FuelType != r_FuelType)
@@ -54,7 +70,7 @@ namespace Ex03.GarageLogic
 
             if (tempFuelAmount > r_MaxFuelAmount)
             {
-                throw new ValueOutOfRangeException("Max amount reached.", 0, r_MaxFuelAmount - m_FuelAmount);
+                throw new ValueOutOfRangeException("Max amount reached.", 0, maxAmountPossible);
             }
 
             m_FuelAmount = tempFuelAmount;
@@ -71,12 +87,10 @@ namespace Ex03.GarageLogic
 
         public override Dictionary<string, PropertyInfo> GetFieldsToUpdate()
         {
-            Dictionary<string, PropertyInfo> fields =
-                new Dictionary<string, PropertyInfo>()
-                    {
-                        {$"Fuel amount (Max is {r_MaxFuelAmount})", GetType().GetProperty("FuelAmount")}
-                    };
-            return fields;
+            return new Dictionary<string, PropertyInfo>
+                   {
+                       { $"Fuel amount (Max is {r_MaxFuelAmount})", GetType().GetProperty("FuelAmount") }
+                   };
         }
 
         public enum eFuelType

@@ -20,13 +20,22 @@ namespace Ex03.GarageLogic
 
         public string Manufacturer
         {
-            get { return m_Manufacturer; }
-            protected set { m_Manufacturer = value; }
+            get
+            {
+                return m_Manufacturer;
+            }
+            protected set
+            {
+                m_Manufacturer = value;
+            }
         }
 
         public float MaxAirPressure
         {
-            get { return r_MaxAirPressure; }
+            get
+            {
+                return r_MaxAirPressure;
+            }
         }
 
         public float AirPressure
@@ -37,22 +46,31 @@ namespace Ex03.GarageLogic
             }
             set
             {
-                Inflate(value);
+                try
+                {
+                    Inflate(value);
+                }
+                catch(ValueOutOfRangeException exception)
+                {
+                    throw;
+                }
             }
         }
 
         public void Inflate(float i_AirToAdd)
         {
+            float maxAmountPossible = r_MaxAirPressure - m_AirPressure;
+
             if (i_AirToAdd < 0)
             {
-                throw new Exception("Invalid air amount.");
+                throw new ValueOutOfRangeException("Invalid air amount.", 0, maxAmountPossible);
             }
 
             float tempAirPressure = m_AirPressure + i_AirToAdd;
 
             if (tempAirPressure > MaxAirPressure)
             {
-                throw new Exception("Air pressure given is higher.");
+                throw new ValueOutOfRangeException("Air pressure reached the maximum amount.", 0, maxAmountPossible);
             }
 
             m_AirPressure = tempAirPressure;

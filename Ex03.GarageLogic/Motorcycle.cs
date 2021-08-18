@@ -5,8 +5,8 @@ namespace Ex03.GarageLogic
 {
     public class Motorcycle : Vehicle
     {
-        protected const float k_MaxWheelAirPressure = 32;
-        protected const int k_NumOfWheels = 2;
+        private const float k_MaxWheelAirPressure = 32;
+        private const int k_NumOfWheels = 2;
         private eLicenseType m_LicenseType;
 
         public Motorcycle(string i_License, string i_Name)

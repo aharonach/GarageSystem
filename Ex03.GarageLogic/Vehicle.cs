@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 
 namespace Ex03.GarageLogic
 {
@@ -16,6 +14,11 @@ namespace Ex03.GarageLogic
 
         protected Vehicle(string i_License, string i_ModelName, int i_NumOfWheels, float i_MaxWheelAirPressure)
         {
+            if(!Validations.IsNumeric(i_License))
+            {
+                throw new ArgumentException("License number should only contain digits.");
+            }
+
             r_License = i_License;
             r_ModelName = i_ModelName;
             r_NumOfWheels = i_NumOfWheels;
@@ -38,13 +41,13 @@ namespace Ex03.GarageLogic
             get { return r_Wheels; }
         }
         
-        public Tank VehicleTank
+        public Tank Tank
         {
             get { return m_Tank; }
             protected set { m_Tank = value; }
         }
 
-        protected void AddWheel(string i_Manufacturer, float i_MaxAirPressure, float i_AirPressure)
+        private void addWheel(string i_Manufacturer, float i_MaxAirPressure, float i_AirPressure)
         {
             if(r_Wheels.Count < r_NumOfWheels)
             {
@@ -56,7 +59,7 @@ namespace Ex03.GarageLogic
         {
             for (int i = 0; i < r_NumOfWheels; i++)
             {
-                AddWheel(string.Empty, i_MaxAirPressure, 0);
+                addWheel(string.Empty, i_MaxAirPressure, 0);
             }
         }
 
@@ -80,7 +83,7 @@ namespace Ex03.GarageLogic
 
         public Dictionary<string, PropertyInfo> GetFieldsToUpdateOfTank()
         {
-            return VehicleTank.GetFieldsToUpdate();
+            return Tank.GetFieldsToUpdate();
         }
 
         public Dictionary<string, object> GetFieldsWithValues()
@@ -101,7 +104,7 @@ namespace Ex03.GarageLogic
             }
 
             // Add tank properties values
-            foreach (KeyValuePair<string, object> kvp in VehicleTank.GetFieldsValues())
+            foreach (KeyValuePair<string, object> kvp in Tank.GetFieldsValues())
             {
                 fields.Add(kvp.Key, kvp.Value);
             }
@@ -113,16 +116,6 @@ namespace Ex03.GarageLogic
             }
 
             return fields;
-        }
-
-        public void UpdatePropertyValue(KeyValuePair<string, object> i_PropertyValuePair)
-        {
-            PropertyInfo property = GetType().GetProperty(i_PropertyValuePair.Key);
-            
-            if(property != null)
-            {
-                property.SetValue(this, i_PropertyValuePair.Value, null);
-            }
         }
     }
 }

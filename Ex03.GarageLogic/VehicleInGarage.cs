@@ -14,6 +14,11 @@ namespace Ex03.GarageLogic
 
         public VehicleInGarage(string i_PersonName, string i_Phone, Vehicle i_Vehicle)
         {
+            if(!Validations.IsNumeric(i_Phone))
+            {
+                throw new ArgumentException("Phone number should contain only digits.");
+            }
+
             PersonName = i_PersonName;
             Phone = i_Phone;
             Status = Garage.eVehicleStatus.InRepair;
