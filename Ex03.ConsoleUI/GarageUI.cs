@@ -74,6 +74,7 @@ namespace Ex03.ConsoleUI
 
                 case Menu.eActionType.InflateAir:
                     printHeader("Inflate Air in Vehicle's Wheels");
+                    InflateAirInWheels();
                     break;
 
                 case Menu.eActionType.Refuel:
@@ -95,6 +96,7 @@ namespace Ex03.ConsoleUI
                     Console.WriteLine("Goodbye!");
                     break;
             }
+            Console.WriteLine("\n");
         }
 
         private void insertVehicle()
@@ -196,6 +198,8 @@ namespace Ex03.ConsoleUI
                 string license = InputUtils.GetLicenseNumberFromUser();
                 Dictionary<string, object> values = Garage.GetVehicleFieldsAndValues(license);
 
+                Console.WriteLine($"\nInformation for vehicle '{license}':");
+
                 foreach(KeyValuePair<string, object> kvp in values)
                 {
                     Console.WriteLine($"{kvp.Key} : {kvp.Value}");
@@ -213,24 +217,34 @@ namespace Ex03.ConsoleUI
 
         private void showAllVehicles()
         {
-            try
+
+            Dictionary<string, Garage.eVehicleStatus> vehicleStatus = Garage.GetVehiclesLicenses();
+
+            if (vehicleStatus.Count > 0)
             {
-                Console.WriteLine("\nDo you want to filter by status?");
-                bool wantsToFilter = InputUtils.GetYesOrNoFromUser();
-
-                Dictionary<string, Garage.eVehicleStatus> vehicleStatus =
-                    wantsToFilter
-                        ? Garage.GetVehiclesLicenses(InputUtils.ChooseVehicleStatus())
-                        : Garage.GetVehiclesLicenses();
-
-                foreach(KeyValuePair<string, Garage.eVehicleStatus> kvp in vehicleStatus)
+                try
                 {
-                    Console.WriteLine($"License: {kvp.Key}, Status: {kvp.Value}");
+                    Console.WriteLine("\nDo you want to filter by status?");
+                    bool wantsToFilter = InputUtils.GetYesOrNoFromUser();
+
+                    if (wantsToFilter)
+                    {
+                        vehicleStatus = Garage.GetVehiclesLicenses(InputUtils.ChooseVehicleStatus());
+                    }
+
+                    foreach (KeyValuePair<string, Garage.eVehicleStatus> kvp in vehicleStatus)
+                    {
+                        Console.WriteLine($"License: {kvp.Key}, Status: {kvp.Value}");
+                    }
+                }
+                catch (FormatException exception)
+                {
+                    Console.WriteLine(exception.Message);
                 }
             }
-            catch(FormatException exception)
+            else
             {
-                Console.WriteLine(exception.Message);
+                Console.WriteLine("\nThere are no cars to display.");
             }
         }
 
@@ -242,6 +256,20 @@ namespace Ex03.ConsoleUI
                 Garage.UpdateVehicleInGarageStatus(license, InputUtils.ChooseVehicleStatus());
             }
             catch(ArgumentException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+        }
+
+        private void InflateAirInWheels()
+        {
+            try
+            {
+                string license = InputUtils.GetLicenseNumberFromUser();
+                Garage.InflateAirInVehicleWheels(license);
+                Console.WriteLine("Air pressure is now maximum.");
+            }
+            catch (ArgumentException exception)
             {
                 Console.WriteLine(exception.Message);
             }

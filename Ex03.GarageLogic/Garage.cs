@@ -27,11 +27,24 @@ namespace Ex03.GarageLogic
 
         public void UpdateVehicleInGarageStatus(string i_License, eVehicleStatus i_VehicleStatus)
         {
-            if(IsVehicleExistsInGarage(i_License))
+            if (IsVehicleExistsInGarage(i_License))
             {
                 VehicleInGarage vehicleInGarage = getVehicleInGarage(i_License);
                 vehicleInGarage.Status = i_VehicleStatus;
             }
+        }
+
+        public void InflateAirInVehicleWheels(string i_License)
+        {
+            VehicleInGarage vehicleInGarage = getVehicleInGarage(i_License);
+            Vehicle vehicle = vehicleInGarage.Vehicle;
+
+            foreach (Wheel wheel in vehicle.Wheels)
+            {
+                float amountToFill = wheel.MaxAirPressure - wheel.AirPressure;
+                wheel.Inflate(amountToFill);
+            }
+            
         }
 
         public Dictionary<string, KeyValuePair<string, Type>> GetVehicleFieldsToUpdate(string i_License, eFieldGroup i_GroupType)
