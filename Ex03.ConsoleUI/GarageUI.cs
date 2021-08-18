@@ -23,13 +23,15 @@ namespace Ex03.ConsoleUI
         {
             Menu.eActionType optionActionType;
 
+            printHeader("WELCOME TO THE GARAGE!");
+
             do
             {
                 Menu.PrintMenu();
                 int userInput = getMenuChoice(Menu.Length);
                 optionActionType = Menu.GetActionOfOption(userInput);
                 doAction(optionActionType);
-            } 
+            }
             while (optionActionType != Menu.eActionType.Exit);
         }
 
@@ -52,6 +54,7 @@ namespace Ex03.ConsoleUI
 
         private void doAction(Menu.eActionType option)
         {
+            Console.Clear();
             switch (option)
             {
                 case Menu.eActionType.InsertCar:
@@ -128,6 +131,8 @@ namespace Ex03.ConsoleUI
                     {
                         askAndUpdateVehicleFieldsByCategory(license, fieldGroup);
                     }
+
+                    Console.WriteLine("\nVehicle added successfully!");
                 }
             }
             catch(FormatException exception)
@@ -210,7 +215,7 @@ namespace Ex03.ConsoleUI
         {
             try
             {
-                Console.WriteLine("Do you want to filter by status?");
+                Console.WriteLine("\nDo you want to filter by status?");
                 bool wantsToFilter = InputUtils.GetYesOrNoFromUser();
 
                 Dictionary<string, Garage.eVehicleStatus> vehicleStatus =
@@ -220,7 +225,7 @@ namespace Ex03.ConsoleUI
 
                 foreach(KeyValuePair<string, Garage.eVehicleStatus> kvp in vehicleStatus)
                 {
-                    Console.WriteLine($"Vehicle {kvp.Key}, Status: {kvp.Value}");
+                    Console.WriteLine($"License: {kvp.Key}, Status: {kvp.Value}");
                 }
             }
             catch(FormatException exception)
@@ -258,7 +263,7 @@ namespace Ex03.ConsoleUI
             }
             catch(ArgumentException exception)
             {
-                Console.WriteLine(exception.Message);
+                Console.WriteLine($"\nError: {exception.Message}\n");
             }
             catch(ValueOutOfRangeException exception)
             {
@@ -272,7 +277,7 @@ namespace Ex03.ConsoleUI
             {
                 string license = InputUtils.GetLicenseNumberFromUser();
 
-                Console.WriteLine("How much battery time to add? ");
+                Console.WriteLine("\nHow much battery time to add? ");
                 float amount = InputUtils.GetFloatFromUser();
 
                 Garage.RechargeVehicle(license, amount);
@@ -289,16 +294,16 @@ namespace Ex03.ConsoleUI
 
         private void outOfRangeMessage(ValueOutOfRangeException i_ValueOutOfRangeException)
         {
-            Console.WriteLine(i_ValueOutOfRangeException.Message);
+            Console.WriteLine($"\nError: {i_ValueOutOfRangeException.Message}");
             Console.WriteLine(
-                $"Min value: {i_ValueOutOfRangeException.MinValue}, Max value: {i_ValueOutOfRangeException.MaxValue}.");
+                $"Min value: {i_ValueOutOfRangeException.MinValue}, Max value: {i_ValueOutOfRangeException.MaxValue}.\n");
         }
 
         private void printHeader(string i_HeaderMessage)
         {
-            Console.WriteLine("\n===========");
+            Console.WriteLine("\n===========\n");
             Console.WriteLine(i_HeaderMessage);
-            Console.WriteLine("===========\n");
+            Console.WriteLine("\n===========\n");
         }
 
         private void printFieldGroupHeader(Garage.eFieldGroup i_FieldGroup)
