@@ -5,7 +5,7 @@ namespace Ex03.ConsoleUI
 {
     internal class Menu
     {
-        private readonly List<MenuOption> r_Options = new List<MenuOption>(10);
+        private readonly List<KeyValuePair<string, eActionType>> r_Options = new List<KeyValuePair<string, eActionType>>(10);
 
         public Menu()
         {
@@ -30,42 +30,22 @@ namespace Ex03.ConsoleUI
 
         public void addOption(string i_title, eActionType i_ActionType)
         {
-            r_Options.Add(new MenuOption(i_title, i_ActionType));
+            r_Options.Add(new KeyValuePair<string, eActionType>(i_title, i_ActionType));
 
         }
 
         public eActionType getActionOfOption(int optionNumber)
         {
-            return r_Options[optionNumber - 1].ActionType;
+            return r_Options[optionNumber - 1].Value;
         }
 
         public void printMenu() {
             Console.WriteLine("Menu:");
             for(int i=1; i <= Length; i++)
             {
-                Console.WriteLine(i + ". " + r_Options[i - 1].Title);
+                Console.WriteLine(i + ". " + r_Options[i - 1].Key);
             }
             Console.WriteLine();
-        }
-
-        private class MenuOption
-        {
-            private string m_title;
-            private eActionType eActionType;
-
-            public string Title
-            {
-                get { return m_title; }
-            }
-            public eActionType ActionType
-            {
-                get { return eActionType; }
-            }
-            public MenuOption(string i_title, eActionType i_ActionType)
-            {
-                m_title = i_title;
-                eActionType = i_ActionType;
-            }
         }
 
         public enum eActionType
