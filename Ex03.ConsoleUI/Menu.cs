@@ -5,10 +5,9 @@ using System.Text;
 
 namespace Ex03.ConsoleUI
 {
-
     class Menu
     {
-        private List<MenuOption> m_options = new List<MenuOption>(10);
+        private List<KeyValuePair<string, eActionType>> m_options = new List<KeyValuePair<string, eActionType>>(10);
 
         public int Length
         {
@@ -17,42 +16,21 @@ namespace Ex03.ConsoleUI
 
         public void addOption(string i_title, eActionType i_ActionType)
         {
-            m_options.Add(new MenuOption(i_title, i_ActionType));
-
+            m_options.Add(new KeyValuePair<string, eActionType> (i_title, i_ActionType));
         }
 
         public eActionType getActionOfOption(int optionNumber)
         {
-            return m_options[optionNumber - 1].ActionType;
+            return m_options[optionNumber - 1].Value;
         }
 
         public void printMenu() {
             Console.WriteLine("Menu:");
             for(int i=1; i <= Length; i++)
             {
-                Console.WriteLine(i + ". " + m_options[i - 1].Title);
+                Console.WriteLine(i + ". " + m_options[i - 1].Key);
             }
             Console.WriteLine();
-        }
-
-        private class MenuOption
-        {
-            private string m_title;
-            private eActionType eActionType;
-
-            public string Title
-            {
-                get { return m_title; }
-            }
-            public eActionType ActionType
-            {
-                get { return eActionType; }
-            }
-            public MenuOption(string i_title, eActionType i_ActionType)
-            {
-                m_title = i_title;
-                eActionType = i_ActionType;
-            }
         }
 
         public enum eActionType
