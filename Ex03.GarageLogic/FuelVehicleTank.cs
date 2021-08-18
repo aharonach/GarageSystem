@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Ex03.GarageLogic
 {
-    public class Fuel : Vehicle.Tank
+    public class Fuel : Tank
     {
         private readonly eFuelType r_FuelType;
         private readonly float r_MaxFuelAmount;
@@ -42,7 +42,7 @@ namespace Ex03.GarageLogic
         {
             if (i_FuelToAdd < 0)
             {
-                throw new Exception("Invalid fuel amount.");
+                throw new ValueOutOfRangeException("Invalid fuel amount.", 0, r_MaxFuelAmount - m_FuelAmount);
             }
 
             if (i_FuelType != r_FuelType)
@@ -74,8 +74,7 @@ namespace Ex03.GarageLogic
             Dictionary<string, PropertyInfo> fields =
                 new Dictionary<string, PropertyInfo>()
                     {
-                        {"Fuel type", GetType().GetProperty("FuelType")},
-                        {"Fuel amount", GetType().GetProperty("FuelAmount")},
+                        {$"Fuel amount (Max is {r_MaxFuelAmount})", GetType().GetProperty("FuelAmount")}
                     };
             return fields;
         }

@@ -34,7 +34,7 @@ namespace Ex03.GarageLogic
             VehicleInGarage vehicleInGarage;
             if(IsVehicleExistsInGarage(i_License))
             {
-                vehicleInGarage = GetVehicleInGarage(i_License);
+                vehicleInGarage = getVehicleInGarage(i_License);
                 vehicleInGarage.Status = i_vehicleStatus;
             }
         }
@@ -81,19 +81,20 @@ namespace Ex03.GarageLogic
             switch (groupType)
             {
                 case eFieldGroup.Additional:
-                    objectToUpdate = vehicle;
+                    updateFieldsOfObject(vehicle, i_FieldsWithValues);
                     break;
 
                 case eFieldGroup.Wheel:
-                    objectToUpdate = vehicle.Wheels[0];
+                    foreach(Wheel wheel in vehicle.Wheels)
+                    {
+                        updateFieldsOfObject(wheel, i_FieldsWithValues);
+                    }
                     break;
 
                 case eFieldGroup.Tank:
-                    objectToUpdate = vehicle.VehicleTank;
+                    updateFieldsOfObject(vehicle.VehicleTank, i_FieldsWithValues);
                     break;
             }
-
-            updateFieldsOfObject(objectToUpdate, i_FieldsWithValues);
         }
 
         private void updateFieldsOfObject(object objectToUpdate, Dictionary<string, object> i_FieldsWithValues)
@@ -110,7 +111,7 @@ namespace Ex03.GarageLogic
         }
         public Dictionary<string, object> GetVehicleFieldsAndValues(string i_License)
         {
-            Vehicle vehicle = r_Vehicles[i_License].Vehicle;
+            Vehicle vehicle = getVehicleInGarage(i_License).Vehicle;
             return vehicle.GetFieldsWithValues();
         }
 
@@ -141,21 +142,21 @@ namespace Ex03.GarageLogic
             return vehiclesLicenses;
         }
 
-
-        protected VehicleInGarage GetVehicleInGarage(string i_License)
+        public void UpdateStatusOfVehicle(string i_License, eVehicleStatus i_StatusToUpdate)
         {
-            return r_Vehicles[i_License];
+            VehicleInGarage vehicle = getVehicleInGarage(i_License);
+            vehicle.Status = i_StatusToUpdate;
         }
 
-        //public VehicleInGarage GetVehicleByStatus(eVehicleStatus i_Status)
-        //{
-        //    return null;
-        //}
+        private VehicleInGarage getVehicleInGarage(string i_License)
+        {
+            if(!IsVehicleExistsInGarage(i_License))
+            {
+                throw new ArgumentException(string.Format("Vehicle with license {0} doesn't exists.", i_License));
+            }
 
-        //public void UpdateVehicle(string i_License, Dictionary<string, object> i_PropertiesToUpdate)
-        //{
-
-        //}
+            return r_Vehicles[i_License];
+        }
 
         public Dictionary<string, VehicleFactory.eType> GetVehicleTypes()
         {

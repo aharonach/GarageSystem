@@ -44,11 +44,13 @@
     <Compile Include="FuelVehicleTank.cs" />
     <Compile Include="Garage.cs" />
     <Compile Include="Motorcycle.cs" />
+    <Compile Include="Tank.cs" />
     <Compile Include="Truck.cs" />
     <Compile Include="ValueOutOfRangeException.cs" />
     <Compile Include="Vehicle.cs" />
     <Compile Include="VehicleFactory.cs" />
     <Compile Include="VehicleInGarage.cs" />
+    <Compile Include="Wheel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

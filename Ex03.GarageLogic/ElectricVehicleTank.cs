@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Ex03.GarageLogic
 {
-    public class Electric : Vehicle.Tank
+    public class Electric : Tank
     {
         private readonly float r_MaxBatteryTime;
         private float m_BatteryTime;
@@ -35,10 +35,17 @@ namespace Ex03.GarageLogic
         {
             if (i_BatteryTimeToAdd < 0)
             {
-                throw new Exception("Invalid battery time amount.");
+                throw new ValueOutOfRangeException("Invalid battery time amount.", 0, r_MaxBatteryTime - m_BatteryTime);
             }
 
-            m_BatteryTime = Math.Min(m_BatteryTime + i_BatteryTimeToAdd, r_MaxBatteryTime);
+            float tempBatteryTimeAmount = m_BatteryTime + i_BatteryTimeToAdd;
+
+            if (tempBatteryTimeAmount > r_MaxBatteryTime)
+            {
+                throw new ValueOutOfRangeException("Max amount reached.", 0, r_MaxBatteryTime - m_BatteryTime);
+            }
+
+            m_BatteryTime = tempBatteryTimeAmount;
         }
 
         public override Dictionary<string, object> GetFieldsValues()
@@ -54,7 +61,7 @@ namespace Ex03.GarageLogic
             Dictionary<string, PropertyInfo> fields = 
                 new Dictionary<string, PropertyInfo>() 
                     { 
-                        {"Battery time", GetType().GetProperty("BatteryTime")},
+                        {$"Battery time (Max is {r_MaxBatteryTime})", GetType().GetProperty("BatteryTime")}
                     };
             return fields;
         }

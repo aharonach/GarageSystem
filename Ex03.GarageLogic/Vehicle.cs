@@ -72,7 +72,7 @@ namespace Ex03.GarageLogic
             Dictionary<string, PropertyInfo> fields = new Dictionary<string, PropertyInfo>
             {
                 { $"Wheels Manufacturer", Wheels[0].GetType().GetProperty("Manufacturer") },
-                { $"Wheels Current Air Pressure", Wheels[0].GetType().GetProperty("AirPressure") }
+                { $"Wheels Current Air Pressure (Max is {Wheels[0].MaxAirPressure})", Wheels[0].GetType().GetProperty("AirPressure") }
             };
 
             return fields;
@@ -122,94 +122,6 @@ namespace Ex03.GarageLogic
             if(property != null)
             {
                 property.SetValue(this, i_PropertyValuePair.Value, null);
-            }
-        }
-
-        public abstract class Tank
-        {
-
-            public abstract eType Type
-            {
-                get;
-            }
-
-            public abstract float EnergyPercent
-            {
-                get;
-            }
-
-            public virtual Dictionary<string, object> GetFieldsValues()
-            {
-                Dictionary<string, object> fields =
-                    new Dictionary<string, object>
-                    {
-                        { "Tank type", Type }, 
-                        { "Energy (%)", EnergyPercent }
-                    };
-
-                return fields;
-            }
-
-            public abstract Dictionary<string, PropertyInfo> GetFieldsToUpdate();
-
-            public enum eType
-            {
-                Electric,
-                Fuel
-            }
-        }
-
-        public class Wheel
-        {
-            private readonly float r_MaxAirPressure;
-            private string m_Manufacturer;
-            private float m_AirPressure;
-
-            public Wheel(string i_Manufacturer, float i_MaxAirPressure, float i_AirPressure)
-            {
-                r_MaxAirPressure = i_MaxAirPressure;
-                m_Manufacturer = i_Manufacturer;
-                m_AirPressure = i_AirPressure;
-            }
-
-            public string Manufacturer
-            {
-                get;
-                protected set;
-            }
-
-            public float MaxAirPressure
-            {
-                get { return r_MaxAirPressure; }
-            }
-
-            public float AirPressure
-            {
-                get
-                {
-                    return m_AirPressure;
-                }
-                set
-                {
-                    Inflate(value);
-                }
-            }
-
-            public void Inflate(float i_AirToAdd)
-            {
-                if (i_AirToAdd < 0)
-                {
-                    throw new Exception("Invalid air amount.");
-                }
-
-                float tempAirPressure = m_AirPressure + i_AirToAdd;
-
-                if (tempAirPressure > MaxAirPressure)
-                {
-                    throw new Exception("Air pressure given is higher.");
-                }
-
-                m_AirPressure = tempAirPressure;
             }
         }
     }
