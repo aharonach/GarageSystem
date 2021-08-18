@@ -9,13 +9,20 @@ namespace Ex03.GarageLogic
         protected const int k_NumOfWheels = 2;
         private eLicenseType m_LicenseType;
 
-        public Motorcycle(string i_License, string i_Name) : base(i_License, i_Name, k_NumOfWheels, k_MaxWheelAirPressure)
+        public Motorcycle(string i_License, string i_Name)
+            : base(i_License, i_Name, k_NumOfWheels, k_MaxWheelAirPressure)
         {
         }
 
         public override Dictionary<string, PropertyInfo> GetFieldsToUpdate()
         {
-            throw new System.NotImplementedException();
+            Dictionary<string, PropertyInfo> res =
+                new Dictionary<string, PropertyInfo>
+                {
+                    { "License type", GetType().GetProperty("LicenseType") },
+                };
+
+            return res;
         }
 
         public eLicenseType LicenseType

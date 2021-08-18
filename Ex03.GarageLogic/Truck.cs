@@ -16,9 +16,14 @@ namespace Ex03.GarageLogic
 
         public override Dictionary<string, PropertyInfo> GetFieldsToUpdate()
         {
-            throw new System.NotImplementedException();
+            Dictionary<string, PropertyInfo> res = 
+                new Dictionary<string, PropertyInfo>
+                    {
+                        { "Max carrying capacity", GetType().GetProperty("MaxCarryingCapacity") },
+                        { "Drives dangerous materials", GetType().GetProperty("DrivesDangerousMaterials") },
+                    };
+            return res;
         }
-
 
         public float MaxCarryingCapacity
         {
