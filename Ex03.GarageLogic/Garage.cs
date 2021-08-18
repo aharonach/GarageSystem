@@ -20,73 +20,94 @@ namespace Ex03.GarageLogic
             string i_ModelName)
         {
             Vehicle vehicle = VehicleFactory.Create(i_VehicleType, i_License, i_ModelName);
-
             VehicleInGarage vehicleInGarage = new VehicleInGarage(i_PersonName, i_Phone, vehicle);
-
             r_Vehicles.Add(i_License, vehicleInGarage);
         }
 
-        protected Dictionary<string, PropertyInfo> GetVehiclePropertiesToUpdate(Vehicle i_Vehicle)
+        public bool IsVehicleExistsInGarage(string i_License)
         {
-            Dictionary<string, PropertyInfo> vehicleProperties = new Dictionary<string, PropertyInfo>();
-
-            // Get fields of vehicle
-            foreach (KeyValuePair<string, PropertyInfo> kvp in i_Vehicle.GetFieldsToUpdate())
-            {
-                vehicleProperties.Add(kvp.Key, kvp.Value);
-            }
-
-            // Get wheels fields
-            foreach (KeyValuePair<string, PropertyInfo> kvp in i_Vehicle.GetFieldsToUpdateOfWheels())
-            {
-                vehicleProperties.Add(kvp.Key, kvp.Value);
-            }
-
-            // Get tank fields
-            foreach (KeyValuePair<string, PropertyInfo> kvp in i_Vehicle.GetFieldsToUpdateOfTank())
-            {
-                vehicleProperties.Add(kvp.Key, kvp.Value);
-            }
-
-            return vehicleProperties;
+            return r_Vehicles.ContainsKey(i_License);
         }
 
-        public Dictionary<string, KeyValuePair<string, Type>> GetVehicleFieldsToUpdate(string i_License)
+        public void UpdateVehicleInGarageStatus(string i_License, eVehicleStatus i_vehicleStatus)
+        {
+            VehicleInGarage vehicleInGarage;
+            if(IsVehicleExistsInGarage(i_License))
+            {
+                vehicleInGarage = GetVehicleInGarage(i_License);
+                vehicleInGarage.Status = i_vehicleStatus;
+            }
+        }
+
+
+        public Dictionary<string, KeyValuePair<string, Type>> GetVehicleFieldsToUpdate(string i_License, eFieldGroup groupType)
         {
             Dictionary<string, KeyValuePair<string, Type>> vehicleFields = new Dictionary<string, KeyValuePair<string, Type>>();
             Vehicle vehicle = r_Vehicles[i_License].Vehicle;
 
-            // Get vehicle fields
-            foreach(KeyValuePair<string, PropertyInfo> kvp in vehicle.GetFieldsToUpdate())
+            switch(groupType)
             {
-                vehicleFields.Add(kvp.Key, new KeyValuePair<string, Type>(kvp.Value.Name, kvp.Value.PropertyType));
-            }
+                case eFieldGroup.Additional:
+                    collectFieldsToUpdate(vehicle.GetFieldsToUpdate(), vehicleFields);
+                    break;
 
-            // Get wheels fields
-            foreach(KeyValuePair<string, PropertyInfo> kvp in vehicle.GetFieldsToUpdateOfWheels())
-            {
-                vehicleFields.Add(kvp.Key, new KeyValuePair<string, Type>(kvp.Value.Name, kvp.Value.PropertyType));
-            }
+                case eFieldGroup.Wheel:
+                    collectFieldsToUpdate(vehicle.GetFieldsToUpdateOfWheels(), vehicleFields);
+                    break;
 
-            // Get tank fields
-            foreach(KeyValuePair<string, PropertyInfo> kvp in vehicle.GetFieldsToUpdateOfTank())
-            {
-                vehicleFields.Add(kvp.Key, new KeyValuePair<string, Type>(kvp.Value.Name, kvp.Value.PropertyType));
+                case eFieldGroup.Tank:
+                    collectFieldsToUpdate(vehicle.GetFieldsToUpdateOfTank(), vehicleFields);
+                    break;
             }
 
             return vehicleFields;
         }
 
-        private void CollectFieldsToUpdate(Dictionary<string, KeyValuePair<string, Type>> i_FieldsToCollect)
+        private void collectFieldsToUpdate(
+            Dictionary<string, PropertyInfo> i_FieldsToCollect,
+            Dictionary<string, KeyValuePair<string, Type>> o_FieldsToUpdate)
         {
-
+            foreach (KeyValuePair<string, PropertyInfo> kvp in i_FieldsToCollect)
+            {
+                o_FieldsToUpdate.Add(kvp.Key, new KeyValuePair<string, Type>(kvp.Value.Name, kvp.Value.PropertyType));
+            }
         }
 
-        public void UpdateVehicleFields(string i_License, Dictionary<string, object> i_FieldsWithValues)
+        public void UpdateVehicleFields(string i_License, Dictionary<string, object> i_FieldsWithValues, eFieldGroup groupType)
         {
-            // VehicleInGarage vehicleInGarage = GetVehicleFieldsToUpdate(i_License);
+            Vehicle vehicle = r_Vehicles[i_License].Vehicle;
+            object objectToUpdate = vehicle;
+
+            switch (groupType)
+            {
+                case eFieldGroup.Additional:
+                    objectToUpdate = vehicle;
+                    break;
+
+                case eFieldGroup.Wheel:
+                    objectToUpdate = vehicle.Wheels[0];
+                    break;
+
+                case eFieldGroup.Tank:
+                    objectToUpdate = vehicle.VehicleTank;
+                    break;
+            }
+
+            updateFieldsOfObject(objectToUpdate, i_FieldsWithValues);
         }
 
+        private void updateFieldsOfObject(object objectToUpdate, Dictionary<string, object> i_FieldsWithValues)
+        {
+            foreach (KeyValuePair<string, object> kvp in i_FieldsWithValues)
+            {
+                PropertyInfo property = objectToUpdate.GetType().GetProperty(kvp.Key);
+
+                if (property != null)
+                {
+                    property.SetValue(objectToUpdate, kvp.Value, null);
+                }
+            }
+        }
         public Dictionary<string, object> GetVehicleFieldsAndValues(string i_License)
         {
             Vehicle vehicle = r_Vehicles[i_License].Vehicle;
@@ -121,10 +142,10 @@ namespace Ex03.GarageLogic
         }
 
 
-        //public VehicleInGarage GetVehicle(string i_License)
-        //{
-        //    return r_Vehicles[i_License];
-        //}
+        protected VehicleInGarage GetVehicleInGarage(string i_License)
+        {
+            return r_Vehicles[i_License];
+        }
 
         //public VehicleInGarage GetVehicleByStatus(eVehicleStatus i_Status)
         //{
@@ -146,6 +167,13 @@ namespace Ex03.GarageLogic
             InRepair,
             Fixed,
             Payed
+        }
+
+        public enum eFieldGroup
+        {
+            Additional,
+            Wheel,
+            Tank
         }
     }
 }

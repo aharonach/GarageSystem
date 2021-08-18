@@ -10,15 +10,20 @@ namespace Ex03.GarageLogic
         private eColor m_Color;
         private eDoors m_NumOfDoors;
 
-        protected Car(string i_License, string i_Name) : base(i_License, i_Name, k_NumOfWheels, k_MaxWheelAirPressure)
+        protected Car(string i_License, string i_Name)
+            : base(i_License, i_Name, k_NumOfWheels, k_MaxWheelAirPressure)
         {
         }
 
         public override Dictionary<string, PropertyInfo> GetFieldsToUpdate()
         {
-            Dictionary<string, PropertyInfo> res = new Dictionary<string, PropertyInfo>();
-            res.Add("Color", GetType().GetProperty("Color"));
-            res.Add("Number Of Doors", GetType().GetProperty("NumOfDoors"));
+            Dictionary<string, PropertyInfo> res = 
+                new Dictionary<string, PropertyInfo>
+                {
+                    { "Color", GetType().GetProperty("Color") },
+                    { "Number Of Doors", GetType().GetProperty("NumOfDoors") }
+                };
+
             return res;
         }
 

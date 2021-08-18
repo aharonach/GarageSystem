@@ -69,13 +69,11 @@ namespace Ex03.GarageLogic
 
         public Dictionary<string, PropertyInfo> GetFieldsToUpdateOfWheels()
         {
-            Dictionary<string, PropertyInfo> fields = new Dictionary<string, PropertyInfo>();
-
-            for (int i = 0; i < r_NumOfWheels; i++)
+            Dictionary<string, PropertyInfo> fields = new Dictionary<string, PropertyInfo>
             {
-                fields.Add($"Wheel {i + 1} Manufacturer", Wheels[i].GetType().GetProperty("Manufacturer"));
-                fields.Add($"Wheel {i + 1} Current Air Pressure", Wheels[i].GetType().GetProperty("AirPressure"));
-            }
+                { $"Wheels Manufacturer", Wheels[0].GetType().GetProperty("Manufacturer") },
+                { $"Wheels Current Air Pressure", Wheels[0].GetType().GetProperty("AirPressure") }
+            };
 
             return fields;
         }
@@ -87,11 +85,12 @@ namespace Ex03.GarageLogic
 
         public Dictionary<string, object> GetFieldsWithValues()
         {
-            Dictionary<string, object> fields = new Dictionary<string, object>();
-
-            // Add basic properties values
-            fields.Add("License number", License);
-            fields.Add("Model name", ModelName);
+            Dictionary<string, object> fields = new Dictionary<string, object>
+            {
+                // Add basic properties values
+                { "License number", License },
+                { "Model name", ModelName }
+            };
 
             // Add wheels properties values
             for (int i = 0; i < r_NumOfWheels; i++)
@@ -118,8 +117,12 @@ namespace Ex03.GarageLogic
 
         public void UpdatePropertyValue(KeyValuePair<string, object> i_PropertyValuePair)
         {
-            Type obj = GetType();
-            obj.GetProperty(i_PropertyValuePair.Key).SetValue(obj, i_PropertyValuePair.Value, null);
+            PropertyInfo property = GetType().GetProperty(i_PropertyValuePair.Key);
+            
+            if(property != null)
+            {
+                property.SetValue(this, i_PropertyValuePair.Value, null);
+            }
         }
 
         public abstract class Tank
@@ -137,11 +140,11 @@ namespace Ex03.GarageLogic
 
             public virtual Dictionary<string, object> GetFieldsValues()
             {
-                Dictionary<string, object> fields = 
-                    new Dictionary<string, object>()
+                Dictionary<string, object> fields =
+                    new Dictionary<string, object>
                     {
-                        {"Tank type", Type},
-                        {"Energy (%)", EnergyPercent},
+                        { "Tank type", Type }, 
+                        { "Energy (%)", EnergyPercent }
                     };
 
                 return fields;

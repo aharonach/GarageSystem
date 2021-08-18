@@ -9,51 +9,55 @@ namespace Ex03.ConsoleUI
 {
     class Program
     {
-        
+
+
         public static void Main()
         {
+            GarageUI ui = new GarageUI();
+            //ui.run();
+
+            //Dictionary<string, string> test = new Dictionary<string, string>();
+
+            //test.Add("1", "2");
+
+            //Console.WriteLine(test.ContainsKey("1"));
+
             Garage garage = new Garage();
-            garage.AddVehicle("gal", "0542832447", VehicleFactory.eType.ElectricCar, "777777", "Tesla");
+            garage.AddVehicle("gal", "0542832447", VehicleFactory.eType.ElectricCar, "123", "Tesla");
 
-            //Dictionary<string, Type> fields = garage.GetVehicleFieldsToUpdate("777777");
+            // To update
+            Dictionary<string, KeyValuePair<string, Type>> fieldsToUpdate;
+            Dictionary<string, object> additionalFields;
 
-            Dictionary<string, object> res = garage.GetVehicleFieldsAndValues("777777");
+            fieldsToUpdate = garage.GetVehicleFieldsToUpdate("123", Garage.eFieldGroup.Additional);
+            additionalFields = new Dictionary<string, object>
+                                                          {
+                                                              { "Color", 1 },
+                                                              { "NumOfDoors", 4 }
+                                                          };
+            garage.UpdateVehicleFields("123", additionalFields, Garage.eFieldGroup.Additional);
 
 
+            fieldsToUpdate = garage.GetVehicleFieldsToUpdate("123", Garage.eFieldGroup.Wheel);
+            additionalFields = new Dictionary<string, object>
+                                                          {
+                                                              { "Manufacturer", "Mishlen1231" },
+                                                              { "AirPressure", 19 }
+                                                          };
+            garage.UpdateVehicleFields("123", additionalFields, Garage.eFieldGroup.Wheel);
 
 
+            fieldsToUpdate = garage.GetVehicleFieldsToUpdate("123", Garage.eFieldGroup.Tank);
+            additionalFields = new Dictionary<string, object>
+                               {
+                                   { "BatteryTime", 2 }
+                               };
+            garage.UpdateVehicleFields("123", additionalFields, Garage.eFieldGroup.Tank);
 
-            ////foreach (VehicleFactory.eType type in VehicleFactory.GetAvailableTypes())
-            ////{
-            ////    Console.WriteLine(type);
-            ////}
+            Dictionary<string, object> res = garage.GetVehicleFieldsAndValues("123");
 
+            Console.WriteLine(res.ToString());
 
-            ////Vehicle v1 = VehicleFactory.Create(
-            ////    (VehicleFactory.eType)VehicleFactory.GetAvailableTypes().GetValue(0),
-            ////    "1234",
-            ////    "BMW");
-
-            //// Logic asks this from vehicle
-            //Dictionary<string, PropertyInfo> fieldsToUpdate = v1.GetFieldsToUpdate();
-
-            //// UI Gets back a dictionary:
-            //// key represents human name of the property
-            //// value represents the type of the property
-            //Dictionary<string, Type> fields = new Dictionary<string, Type>();
-
-            //// UI should pass to the logic a dictionary:
-            //// key represents the human name of the property
-            //// value represents the value of the property from the user
-            //Dictionary<string, object> valuesToReturn = new Dictionary<string, object>();
-
-            //foreach(KeyValuePair<string, Type> kvp in fields)
-            //{
-            //    Console.WriteLine(@"Please enter {0}", kvp.Key);
-            //    valuesToReturn.Add(kvp.Key, GetParameterByType(kvp.Value));
-            //}
-
-            //Dictionary<string, object> res = v1.GetFieldsWithValues();
 
             Console.WriteLine("Press any key...");
             Console.ReadLine();

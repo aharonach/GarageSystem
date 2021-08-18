@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Ex03.GarageLogic;
 
 namespace Ex03.ConsoleUI
 {
     class GarageUI
     {
+        private Garage garage = new Garage();
 
         private const int k_minLicenseNumberLength = 7;
         private const int k_maxLicenseNumberLength = 8;
+
 
 
         private Menu menu = new Menu();
@@ -62,7 +65,6 @@ namespace Ex03.ConsoleUI
             {
                 case Menu.eActionType.InsertCar:
                     insertCar();
-                    Console.WriteLine("InsertCar");
                     break;
 
                 case Menu.eActionType.ShowCars:
@@ -93,13 +95,52 @@ namespace Ex03.ConsoleUI
 
         private void insertCar()
         {
-            bool m_carIsAlreadyInGarage = false;
-
             Console.WriteLine("Enter license number:");
             string number = InputUtils.getLicenseNumberFromUser(k_minLicenseNumberLength, k_maxLicenseNumberLength);
 
-            Console.WriteLine(number);
+            if(garage.IsVehicleExistsInGarage(number))
+            {
+                garage.UpdateVehicleInGarageStatus(number, Garage.eVehicleStatus.InRepair);
+                Console.WriteLine("Vehicle already exists in the garage. change of vehicle changed to 'In Repair'.");
+            }
+            else
+            {
+                Dictionary<string, KeyValuePair<string, Type>> fieldsToUpdate;
+                Dictionary<string, object> additionalFields;
+                string name, phone, model;
 
+
+                Console.WriteLine("Enter your name:");
+                name = Console.ReadLine();
+
+                Console.WriteLine("Enter your phone number:");
+                phone = Console.ReadLine();
+
+                Console.WriteLine("Choose vehicle type:");
+                //phone = Console.ReadLine();
+
+                Console.WriteLine("Enter Model name:");
+                model = Console.ReadLine();
+
+                garage.AddVehicle(name, phone, VehicleFactory.eType.ElectricCar, number, model);
+
+
+                fieldsToUpdate = garage.GetVehicleFieldsToUpdate(number, Garage.eFieldGroup.Additional);
+                additionalFields = new Dictionary<string, object>();
+
+                foreach (KeyValuePair<string, KeyValuePair<string, Type>> field in fieldsToUpdate)
+                {
+                    KeyValuePair<string, Type> propertyInfo = field.Value;
+                    Console.WriteLine($"Enter value for {field.Key}:");
+                    // get the value for
+                    object value = propertyInfo.Value; // here needs to get value
+                    additionalFields.Add(propertyInfo.Key, value);
+                }
+                garage.UpdateVehicleFields(number, additionalFields, Garage.eFieldGroup.Additional);
+
+
+
+            }
         }
 
 

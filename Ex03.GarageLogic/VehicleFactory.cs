@@ -40,14 +40,14 @@ namespace Ex03.GarageLogic
         public static Dictionary<string, eType> GetAvailableTypes()
         {
             Dictionary<string, eType> availableTypes = 
-                new Dictionary<string, eType>(5)
-                   {
-                       {"Fuel Car", eType.FuelCar},
-                       {"Electric Car", eType.ElectricCar},
-                       {"Fuel Motorcycle", eType.FuelMotorcycle},
-                       {"Electric Motorcycle", eType.ElectricMotorcycle},
-                       {"Truck", eType.Truck}
-                   };
+                new Dictionary<string, eType>(5) 
+                {
+                    { "Fuel Car", eType.FuelCar },
+                    { "Electric Car", eType.ElectricCar },
+                    { "Fuel Motorcycle", eType.FuelMotorcycle },
+                    { "Electric Motorcycle", eType.ElectricMotorcycle },
+                    { "Truck", eType.Truck }
+                };
             return availableTypes;
         }
 
