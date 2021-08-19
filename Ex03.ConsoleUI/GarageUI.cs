@@ -58,8 +58,6 @@ namespace Ex03.ConsoleUI
                 {
                     Console.WriteLine(exception.Message);
                 }
-
-
             }
             while(true);
         }
@@ -309,7 +307,6 @@ namespace Ex03.ConsoleUI
                 {
                     outOfRangeMessage(exception);
                 }
-
             }
             else
             {
@@ -337,7 +334,6 @@ namespace Ex03.ConsoleUI
             {
                 outOfRangeMessage(exception);
             }
-
         }
 
         private void inflateAirInWheels()
