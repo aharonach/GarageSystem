@@ -54,6 +54,12 @@ namespace Ex03.ConsoleUI
                 {
                     outOfRangeMessage(exception);
                 }
+                catch (FormatException exception)
+                {
+                    Console.WriteLine(exception.Message);
+                }
+
+
             }
             while(true);
         }
@@ -318,6 +324,10 @@ namespace Ex03.ConsoleUI
             {
                 Console.WriteLine(exception.Message);
             }
+            catch (FormatException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
         }
 
         private void inflateAirInWheels()
@@ -329,6 +339,10 @@ namespace Ex03.ConsoleUI
                 Console.WriteLine("\nAir pressure is now maximum.");
             }
             catch (ArgumentException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+            catch (FormatException exception)
             {
                 Console.WriteLine(exception.Message);
             }
@@ -357,6 +371,10 @@ namespace Ex03.ConsoleUI
             {
                 outOfRangeMessage(exception);
             }
+            catch (FormatException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
         }
 
         private void rechargeVehicle()
@@ -378,6 +396,10 @@ namespace Ex03.ConsoleUI
             catch (ValueOutOfRangeException exception)
             {
                 outOfRangeMessage(exception);
+            }
+            catch (FormatException exception)
+            {
+                Console.WriteLine(exception.Message);
             }
         }
 
