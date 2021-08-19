@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Ex03.GarageLogic
 {
-    public static class VehicleCreator
+    internal static class VehicleCreator
     {
         public static Vehicle Create(eType i_VehicleType, string i_License, string i_ModelName)
         {
@@ -37,23 +34,24 @@ namespace Ex03.GarageLogic
             return createdVehicle;
         }
 
-        public static Dictionary<string, eType> GetAvailableTypes()
+        public static Dictionary<int, string> GetAvailableTypes()
         {
-            Dictionary<string, eType> availableTypes = 
-                new Dictionary<string, eType> 
+            Dictionary<int, string> availableTypes = 
+                new Dictionary<int, string> 
                 {
-                    { "Fuel Car", eType.FuelCar },
-                    { "ElectricTank Car", eType.ElectricCar },
-                    { "Fuel Motorcycle", eType.FuelMotorcycle },
-                    { "ElectricTank Motorcycle", eType.ElectricMotorcycle },
-                    { "Truck", eType.Truck }
+                    { (int) eType.FuelCar, "Fuel Car" },
+                    { (int) eType.ElectricCar, "Electric Car" },
+                    { (int) eType.FuelMotorcycle, "Fuel Motorcycle" },
+                    { (int) eType.ElectricMotorcycle, "Electric Motorcycle" },
+                    { (int) eType.Truck, "Truck" }
                 };
+
             return availableTypes;
         }
 
         public enum eType
         {
-            FuelCar,
+            FuelCar = 1,
             ElectricCar,
             FuelMotorcycle,
             ElectricMotorcycle,

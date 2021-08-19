@@ -19,38 +19,23 @@ namespace Ex03.GarageLogic
 
         public override eType Type
         {
-            get
-            {
-                return eType.Fuel;
-            }
+            get { return eType.Fuel; }
         }
 
         public override float EnergyPercent
         {
-            get
-            {
-                return m_FuelAmount / r_MaxFuelAmount * 100;
-            }
+            get { return m_FuelAmount / r_MaxFuelAmount * 100; }
         }
 
         public eFuelType FuelType
         {
-            get
-            {
-                return r_FuelType;
-            }
+            get { return r_FuelType; }
         }
 
         public float FuelAmount
         {
-            get
-            {
-                return m_FuelAmount;
-            }
-            set
-            {
-                Refuel(r_FuelType, value);
-            }
+            get { return m_FuelAmount; }
+            set { Refuel(r_FuelType, value); }
         }
 
         public void Refuel(eFuelType i_FuelType, float i_FuelToAdd)
@@ -83,6 +68,7 @@ namespace Ex03.GarageLogic
             fields.Add("Fuel type", FuelType);
             fields.Add("Max fuel amount", r_MaxFuelAmount);
             fields.Add("Current fuel amount", FuelAmount);
+
             return fields;
         }
 

@@ -20,50 +20,29 @@ namespace Ex03.GarageLogic
 
         public int Id
         {
-            get
-            {
-                return r_WheelId;
-            }
+            get { return r_WheelId; }
         }
 
         public string Manufacturer
         {
-            get
-            {
-                return m_Manufacturer;
-            }
-            protected set
-            {
-                m_Manufacturer = value;
-            }
+            get { return m_Manufacturer; } 
+            protected set { m_Manufacturer = value; }
         }
 
         public float MaxAirPressure
         {
-            get
-            {
-                return r_MaxAirPressure;
-            }
+            get { return r_MaxAirPressure; }
         }
 
         public float AirPressure
         {
-            get
-            {
-                return m_AirPressure;
-            }
-            set
-            {
-                Inflate(value);
-            }
+            get { return m_AirPressure; }
+            set { Inflate(value); }
         }
 
         public float MaxAirPressureToInflate
         {
-            get
-            {
-                return r_MaxAirPressure - m_AirPressure;
-            }
+            get { return r_MaxAirPressure - m_AirPressure; }
         }
 
         public Dictionary<string, PropertyInfo> GetFieldsToUpdate()

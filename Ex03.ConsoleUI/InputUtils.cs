@@ -1,28 +1,14 @@
-﻿using Ex03.GarageLogic;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Ex03.GarageLogic;
 
 namespace Ex03.ConsoleUI
 {
     internal static class InputUtils
     {
-        public static int GetNumberFromUser()
-        {
-            string stringFromUser = GetStringFromUser();
-                
-            if (!int.TryParse(stringFromUser, out int numberFromUser))
-            {
-                throw new FormatException("Invalid number input.");
-            }
-
-            return numberFromUser;
-        }
-
         public static int GetNumberFromUserInRange(int i_Min, int i_Max)
         {
-            int numberFromUser = GetNumberFromUser();
+            int numberFromUser = getNumberFromUser();
 
             if (!isNumberInRange(numberFromUser, i_Min, i_Max))
             {
@@ -91,7 +77,7 @@ namespace Ex03.ConsoleUI
                         break;
 
                     case "Int32":
-                        valueToReturn = GetNumberFromUser();
+                        valueToReturn = getNumberFromUser();
                         break;
 
                     case "Boolean":
@@ -123,6 +109,24 @@ namespace Ex03.ConsoleUI
 
             return (int)enumValues.GetValue(enumValueFromUser - 1);
         }
+
+        public static int GetChooseFromList(Dictionary<int, string> i_ListToChooseFrom)
+        {
+            foreach(KeyValuePair<int, string> keyValuePair in i_ListToChooseFrom)
+            {
+                Console.WriteLine(@"{0}. {1}", keyValuePair.Key, keyValuePair.Value);
+            }
+
+            Console.Write("Your choose: ");
+            int chosenOption = getNumberFromUser();
+
+            if(!i_ListToChooseFrom.ContainsKey(chosenOption))
+            {
+                throw new FormatException("Option doesn't exists.");
+            }
+
+            return chosenOption;
+        }
         
         public static float GetFloatFromUser()
         {
@@ -146,6 +150,18 @@ namespace Ex03.ConsoleUI
             }
             
             return userInput;
+        }
+
+        private static int getNumberFromUser()
+        {
+            string stringFromUser = GetStringFromUser();
+
+            if (!int.TryParse(stringFromUser, out int numberFromUser))
+            {
+                throw new FormatException("Invalid number input.");
+            }
+
+            return numberFromUser;
         }
 
         private static bool isNumberInRange(int i_Number, int i_Min, int i_Max)

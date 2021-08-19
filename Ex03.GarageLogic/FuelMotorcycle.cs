@@ -1,6 +1,6 @@
 ﻿namespace Ex03.GarageLogic
 {
-    class FuelMotorcycle : Motorcycle
+    internal class FuelMotorcycle : Motorcycle
     {
         private const int k_MaxFuelInLiter = 6;
         private const FuelTank.eFuelType k_FuelType = FuelTank.eFuelType.Octan98;

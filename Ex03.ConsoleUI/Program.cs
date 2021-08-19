@@ -1,6 +1,6 @@
 ﻿namespace Ex03.ConsoleUI
 {
-    class Program
+    internal class Program
     {
         public static void Main()
         {

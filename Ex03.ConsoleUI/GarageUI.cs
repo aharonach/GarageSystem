@@ -4,7 +4,7 @@ using Ex03.GarageLogic;
 
 namespace Ex03.ConsoleUI
 {
-    class GarageUI
+    internal class GarageUI
     {
         private readonly Garage r_Garage = new Garage();
         private readonly Menu r_Menu = new Menu();
@@ -129,8 +129,7 @@ namespace Ex03.ConsoleUI
                     string phone = InputUtils.GetStringFromUser();
 
                     Console.WriteLine("\nChoose vehicle's type:");
-                    VehicleCreator.eType vehicleType =
-                        (VehicleCreator.eType)InputUtils.GetEnumValueFromUser(typeof(VehicleCreator.eType));
+                    int vehicleType = InputUtils.GetChooseFromList(Garage.GetVehicleTypes());
 
                     Console.WriteLine("\nEnter Model name:");
                     string modelName = InputUtils.GetStringFromUser();
@@ -257,10 +256,10 @@ namespace Ex03.ConsoleUI
             {
                 string license = InputUtils.GetLicenseNumberFromUser();
                 Dictionary<string, object> values = Garage.GetVehicleFieldsAndValues(license);
+                
+                printHeader($"Vehicle {license}");
 
-                Console.WriteLine($"\nInformation for vehicle '{license}':");
-
-                foreach(KeyValuePair<string, object> kvp in values)
+                foreach (KeyValuePair<string, object> kvp in values)
                 {
                     Console.WriteLine($"{kvp.Key} : {kvp.Value}");
                 }
@@ -416,6 +415,7 @@ namespace Ex03.ConsoleUI
         private void printFieldGroupHeader(Garage.eFieldGroup i_FieldGroup)
         {
             Console.WriteLine("\n-----------");
+
             switch(i_FieldGroup)
             {
                 case Garage.eFieldGroup.Additional:
@@ -428,6 +428,7 @@ namespace Ex03.ConsoleUI
                     Console.WriteLine("Tank fields");
                     break;
             }
+
             Console.WriteLine("-----------");
         }
     }

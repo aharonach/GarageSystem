@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Ex03.GarageLogic
 {
-    public class ElectricTank : Tank
+    internal class ElectricTank : Tank
     {
         private readonly float r_MaxBatteryTime;
         private float m_BatteryTime;
@@ -17,30 +17,18 @@ namespace Ex03.GarageLogic
 
         public override eType Type
         {
-            get
-            {
-                return eType.Electric;
-            }
+            get { return eType.Electric; }
         }
 
         public override float EnergyPercent
         {
-            get
-            {
-                return m_BatteryTime / r_MaxBatteryTime * 100;
-            }
+            get { return m_BatteryTime / r_MaxBatteryTime * 100; }
         }
 
         public float BatteryTime
         {
-            get
-            {
-                return m_BatteryTime;
-            }
-            set
-            {
-                Recharge(value);
-            }
+            get { return m_BatteryTime; }
+            set { Recharge(value); }
         }
 
         public void Recharge(float i_BatteryTimeToAdd)
@@ -67,6 +55,7 @@ namespace Ex03.GarageLogic
             Dictionary<string, object> fields = base.GetFieldsValues();
             fields.Add("Max battery time", r_MaxBatteryTime);
             fields.Add("Current battery time", BatteryTime);
+
             return fields;
         }
 

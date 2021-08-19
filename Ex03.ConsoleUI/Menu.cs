@@ -41,12 +41,15 @@ namespace Ex03.ConsoleUI
             return r_Options[optionNumber - 1].Value;
         }
 
-        public void PrintMenu() {
+        public void PrintMenu() 
+        {
             Console.WriteLine("Menu:");
-            for(int i=1; i <= Length; i++)
+
+            for(int i = 1; i <= Length; i++)
             {
                 Console.WriteLine(i + ". " + r_Options[i - 1].Key);
             }
+
             Console.WriteLine();
         }
 

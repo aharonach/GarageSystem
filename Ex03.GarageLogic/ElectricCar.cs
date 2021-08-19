@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Ex03.GarageLogic
+﻿namespace Ex03.GarageLogic
 {
-    class ElectricCar : Car
+    public class ElectricCar : Car
     {
         private const float k_MaxBatteryInHour = 3.2f;
 
-        public ElectricCar(string i_License, string i_ModelName) 
-            : base (i_License, i_ModelName)
+        public ElectricCar(string i_License, string i_ModelName)
+            : base(i_License, i_ModelName)
         {
             Tank = new ElectricTank(k_MaxBatteryInHour, 0);
         }
