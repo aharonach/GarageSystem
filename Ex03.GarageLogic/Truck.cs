@@ -7,14 +7,19 @@ namespace Ex03.GarageLogic
     {
         private const int k_MaxFuelInLiter = 120;
         private const FuelTank.eFuelType k_FuelType = FuelTank.eFuelType.Soler;
-        protected const float k_MaxWheelAirPressure = 26;
+        private const float k_MaxWheelAirPressure = 26;
         private const int k_NumOfWheels = 16;
         private float m_MaxCarryingCapacity;
         private bool m_DrivesDangerousMaterials;
 
-        public Truck(string i_License, string i_Name) : base(i_License, i_Name, k_NumOfWheels, k_MaxWheelAirPressure)
+        public Truck(string i_License, string i_Name)
+            : base(
+                i_License,
+                i_Name,
+                k_NumOfWheels,
+                k_MaxWheelAirPressure,
+                new FuelTank(k_FuelType, k_MaxFuelInLiter, 0))
         {
-            Tank = new FuelTank(k_FuelType, k_MaxFuelInLiter, 0);
         }
 
         public override Dictionary<string, PropertyInfo> GetFieldsToUpdate()
