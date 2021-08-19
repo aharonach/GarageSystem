@@ -10,9 +10,9 @@ namespace Ex03.GarageLogic
         private readonly string r_License;
         private readonly List<Wheel> r_Wheels;
         private readonly string r_ModelName;
-        private Tank m_Tank;
+        private readonly Tank r_Tank;
 
-        protected Vehicle(string i_License, string i_ModelName, int i_NumOfWheels, float i_MaxWheelAirPressure)
+        protected Vehicle(string i_License, string i_ModelName, int i_NumOfWheels, float i_MaxWheelAirPressure, Tank i_Tank)
         {
             if(!Validations.IsNumeric(i_License))
             {
@@ -23,6 +23,7 @@ namespace Ex03.GarageLogic
             r_ModelName = i_ModelName;
             r_NumOfWheels = i_NumOfWheels;
             r_Wheels = new List<Wheel>(r_NumOfWheels);
+            r_Tank = i_Tank;
             initWheels(i_MaxWheelAirPressure);
         }
 
@@ -43,8 +44,7 @@ namespace Ex03.GarageLogic
         
         public Tank Tank
         {
-            get { return m_Tank; }
-            protected set { m_Tank = value; }
+            get { return r_Tank; }
         }
 
         private void addWheel(int i_WheelId, string i_Manufacturer, float i_MaxAirPressure, float i_AirPressure)

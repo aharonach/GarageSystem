@@ -5,9 +5,8 @@
         private const float k_MaxBatteryInHour = 3.2f;
 
         public ElectricCar(string i_License, string i_ModelName)
-            : base(i_License, i_ModelName)
+            : base(i_License, i_ModelName, new ElectricTank(k_MaxBatteryInHour, 0))
         {
-            Tank = new ElectricTank(k_MaxBatteryInHour, 0);
         }
     }
 }

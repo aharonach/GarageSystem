@@ -9,8 +9,8 @@ namespace Ex03.GarageLogic
         private const int k_NumOfWheels = 2;
         private eLicenseType m_LicenseType;
 
-        protected Motorcycle(string i_License, string i_Name)
-            : base(i_License, i_Name, k_NumOfWheels, k_MaxWheelAirPressure)
+        protected Motorcycle(string i_License, string i_Name, Tank i_Tank)
+            : base(i_License, i_Name, k_NumOfWheels, k_MaxWheelAirPressure, i_Tank)
         {
         }
 
