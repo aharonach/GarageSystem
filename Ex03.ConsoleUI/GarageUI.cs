@@ -11,12 +11,18 @@ namespace Ex03.ConsoleUI
         
         private Garage Garage
         {
-            get { return r_Garage; }
+            get
+            {
+                return r_Garage;
+            }
         }
 
         private Menu Menu
         {
-            get { return r_Menu; }
+            get
+            {
+                return r_Menu;
+            }
         }
 
         public void Run()
@@ -55,6 +61,7 @@ namespace Ex03.ConsoleUI
         private void doAction(Menu.eActionType option)
         {
             Console.Clear();
+
             switch (option)
             {
                 case Menu.eActionType.InsertCar:
@@ -74,7 +81,7 @@ namespace Ex03.ConsoleUI
 
                 case Menu.eActionType.InflateAir:
                     printHeader("Inflate Air in Vehicle's Wheels");
-                    InflateAirInWheels();
+                    inflateAirInWheels();
                     break;
 
                 case Menu.eActionType.Refuel:
@@ -96,6 +103,7 @@ namespace Ex03.ConsoleUI
                     Console.WriteLine("Goodbye!");
                     break;
             }
+
             Console.WriteLine("\n");
         }
 
@@ -107,7 +115,7 @@ namespace Ex03.ConsoleUI
 
                 if(Garage.IsVehicleExistsInGarage(license))
                 {
-                    Garage.UpdateVehicleInGarageStatus(license, Garage.eVehicleStatus.InRepair);
+                    Garage.UpdateVehicleStatusInGarage(license, Garage.eVehicleStatus.InRepair);
                     Console.WriteLine(
                         @"Vehicle already exists in the garage. It's status changed to {0}.",
                         Garage.eVehicleStatus.InRepair);
@@ -153,26 +161,28 @@ namespace Ex03.ConsoleUI
 
         private void askAndUpdateVehicleFieldsByCategory(string i_License, Garage.eFieldGroup i_FieldGroup)
         {
+            printFieldGroupHeader(i_FieldGroup);
+
+            if(i_FieldGroup == Garage.eFieldGroup.Wheel)
+            {
+                askAndUpdateWheelsFields(i_License);
+            }
+            else
+            {
+                askAndUpdateAdditionalFields(i_License, i_FieldGroup);
+            }
+        }
+
+        private void askAndUpdateAdditionalFields(string i_License, Garage.eFieldGroup i_FieldGroup)
+        {
             Dictionary<string, KeyValuePair<string, Type>> fieldsToUpdate =
                 Garage.GetVehicleFieldsToUpdate(i_License, i_FieldGroup);
-
-            printFieldGroupHeader(i_FieldGroup);
 
             do
             {
                 try
                 {
-                    Dictionary<string, object> additionalFields = new Dictionary<string, object>();
-
-                    foreach(KeyValuePair<string, KeyValuePair<string, Type>> field in fieldsToUpdate)
-                    {
-                        KeyValuePair<string, Type> propertyInfo = field.Value;
-                        Console.WriteLine($"\nEnter {field.Key}:");
-                        object valueToUpdate = InputUtils.GetParameterValueByType(propertyInfo.Value);
-                        additionalFields.Add(propertyInfo.Key, valueToUpdate);
-                    }
-
-                    Garage.UpdateVehicleFields(i_License, additionalFields, i_FieldGroup);
+                    Garage.UpdateVehicleFields(i_License, collectValuesForUpdate(fieldsToUpdate), i_FieldGroup);
                     break;
                 }
                 catch (FormatException exception)
@@ -183,12 +193,62 @@ namespace Ex03.ConsoleUI
                 {
                     outOfRangeMessage(exception);
                 }
-                catch(ArgumentException exception)
+                catch (ArgumentException exception)
                 {
                     Console.WriteLine(exception.Message);
                 }
             }
-            while(true);
+            while (true);
+        }
+
+        private void askAndUpdateWheelsFields(string i_License)
+        {
+            Console.WriteLine("\nDo you want to set the values once for all the wheels?");
+            bool applyToAllWheels = InputUtils.GetYesOrNoFromUser();
+
+            do
+            {
+                try
+                {
+                    List<Dictionary<string, KeyValuePair<string, Type>>> wheelsFieldsToUpdate =
+                        Garage.GetWheelsFieldsToUpdate(i_License);
+
+                    if (applyToAllWheels)
+                    {
+                        Dictionary<string, object> fieldsToUpdateOnce = collectValuesForUpdate(wheelsFieldsToUpdate[0]);
+
+                        for (int wheelId = 0; wheelId < wheelsFieldsToUpdate.Count; wheelId++)
+                        {
+                            Garage.UpdateWheelFieldsById(i_License, wheelId, fieldsToUpdateOnce);
+                        }
+                    }
+                    else
+                    {
+                        List<Dictionary<string, object>> fieldValuePairs = new List<Dictionary<string, object>>();
+
+                        for (int wheelId = 0; wheelId < wheelsFieldsToUpdate.Count; wheelId++)
+                        {
+                            fieldValuePairs.Add(collectValuesForUpdate(wheelsFieldsToUpdate[wheelId]));
+                            Garage.UpdateWheelFieldsById(i_License, wheelId, fieldValuePairs[wheelId]);
+                        }
+                    }
+                    
+                    break;
+                }
+                catch (FormatException exception)
+                {
+                    Console.WriteLine(exception.Message);
+                }
+                catch (ValueOutOfRangeException exception)
+                {
+                    outOfRangeMessage(exception);
+                }
+                catch (ArgumentException exception)
+                {
+                    Console.WriteLine(exception.Message);
+                }
+            }
+            while (true);
         }
 
         private void viewSingleVehicle()
@@ -217,7 +277,6 @@ namespace Ex03.ConsoleUI
 
         private void showAllVehicles()
         {
-
             Dictionary<string, Garage.eVehicleStatus> vehicleStatus = Garage.GetVehiclesLicenses();
 
             if (vehicleStatus.Count > 0)
@@ -253,21 +312,22 @@ namespace Ex03.ConsoleUI
             try
             {
                 string license = InputUtils.GetLicenseNumberFromUser();
-                Garage.UpdateVehicleInGarageStatus(license, InputUtils.ChooseVehicleStatus());
+                Garage.UpdateVehicleStatusInGarage(license, InputUtils.ChooseVehicleStatus());
+                Console.WriteLine("\nVehicle status changed.");
             }
-            catch(ArgumentException exception)
+            catch (ArgumentException exception)
             {
                 Console.WriteLine(exception.Message);
             }
         }
 
-        private void InflateAirInWheels()
+        private void inflateAirInWheels()
         {
             try
             {
                 string license = InputUtils.GetLicenseNumberFromUser();
                 Garage.InflateAirInVehicleWheels(license);
-                Console.WriteLine("Air pressure is now maximum.");
+                Console.WriteLine("\nAir pressure is now maximum.");
             }
             catch (ArgumentException exception)
             {
@@ -288,8 +348,9 @@ namespace Ex03.ConsoleUI
                 float amount = InputUtils.GetFloatFromUser();
 
                 Garage.RefuelVehicle(license, fuelType, amount);
+                Console.WriteLine("\nVehicle refueled successfully.");
             }
-            catch(ArgumentException exception)
+            catch (ArgumentException exception)
             {
                 Console.WriteLine($"\nError: {exception.Message}\n");
             }
@@ -309,6 +370,7 @@ namespace Ex03.ConsoleUI
                 float amount = InputUtils.GetFloatFromUser();
 
                 Garage.RechargeVehicle(license, amount);
+                Console.WriteLine("\nVehicle recharged successfully.");
             }
             catch (ArgumentException exception)
             {
@@ -318,6 +380,23 @@ namespace Ex03.ConsoleUI
             {
                 outOfRangeMessage(exception);
             }
+        }
+
+        private Dictionary<string, object> collectValuesForUpdate(Dictionary<string, KeyValuePair<string, Type>> i_FieldsToUpdate)
+        {
+            Dictionary<string, object> fieldsWithValues = new Dictionary<string, object>();
+
+            foreach (KeyValuePair<string, KeyValuePair<string, Type>> field in i_FieldsToUpdate)
+            {
+                KeyValuePair<string, Type> propertyInfo = field.Value;
+
+                Console.WriteLine($"\nEnter {field.Key}:");
+                object valueToUpdate = InputUtils.GetParameterValueByType(propertyInfo.Value);
+
+                fieldsWithValues.Add(propertyInfo.Key, valueToUpdate);
+            }
+
+            return fieldsWithValues;
         }
 
         private void outOfRangeMessage(ValueOutOfRangeException i_ValueOutOfRangeException)
@@ -349,7 +428,7 @@ namespace Ex03.ConsoleUI
                     Console.WriteLine("Tank fields");
                     break;
             }
-            Console.WriteLine("-----------\n");
+            Console.WriteLine("-----------");
         }
     }
 }

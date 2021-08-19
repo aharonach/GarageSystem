@@ -20,12 +20,22 @@ namespace Ex03.GarageLogic
             r_Vehicles.Add(i_License, vehicleInGarage);
         }
 
+        private VehicleInGarage getVehicleInGarage(string i_License)
+        {
+            if (!IsVehicleExistsInGarage(i_License))
+            {
+                throw new ArgumentException($"Vehicle with license {i_License} doesn't exists.");
+            }
+
+            return r_Vehicles[i_License];
+        }
+
         public bool IsVehicleExistsInGarage(string i_License)
         {
             return r_Vehicles.ContainsKey(i_License);
         }
 
-        public void UpdateVehicleInGarageStatus(string i_License, eVehicleStatus i_VehicleStatus)
+        public void UpdateVehicleStatusInGarage(string i_License, eVehicleStatus i_VehicleStatus)
         {
             if (IsVehicleExistsInGarage(i_License))
             {
@@ -41,25 +51,19 @@ namespace Ex03.GarageLogic
 
             foreach (Wheel wheel in vehicle.Wheels)
             {
-                float amountToFill = wheel.MaxAirPressure - wheel.AirPressure;
-                wheel.Inflate(amountToFill);
+                wheel.Inflate(wheel.MaxAirPressureToInflate);
             }
-            
         }
 
         public Dictionary<string, KeyValuePair<string, Type>> GetVehicleFieldsToUpdate(string i_License, eFieldGroup i_GroupType)
         {
             Dictionary<string, KeyValuePair<string, Type>> vehicleFields = new Dictionary<string, KeyValuePair<string, Type>>();
-            Vehicle vehicle = r_Vehicles[i_License].Vehicle;
+            Vehicle vehicle = getVehicleInGarage(i_License).Vehicle;
 
             switch(i_GroupType)
             {
                 case eFieldGroup.Additional:
                     collectFieldsToUpdate(vehicle.GetFieldsToUpdate(), vehicleFields);
-                    break;
-
-                case eFieldGroup.Wheel:
-                    collectFieldsToUpdate(vehicle.GetFieldsToUpdateOfWheels(), vehicleFields);
                     break;
 
                 case eFieldGroup.Tank:
@@ -68,6 +72,24 @@ namespace Ex03.GarageLogic
             }
 
             return vehicleFields;
+        }
+
+        public List<Dictionary<string, KeyValuePair<string, Type>>> GetWheelsFieldsToUpdate(string i_License)
+        {
+            Vehicle vehicle = getVehicleInGarage(i_License).Vehicle;
+            List<Dictionary<string, PropertyInfo>> fieldsOfWheels = vehicle.GetFieldsToUpdateOfWheels();
+
+            // Init new list with hash maps: keys as field label, values as pairs of property name and type.
+            List<Dictionary<string, KeyValuePair<string, Type>>> returnWheelsFields =
+                new List<Dictionary<string, KeyValuePair<string, Type>>>();
+
+            for(int i = 0; i < fieldsOfWheels.Count; i++)
+            {
+                returnWheelsFields.Add(new Dictionary<string, KeyValuePair<string, Type>>());
+                collectFieldsToUpdate(fieldsOfWheels[i], returnWheelsFields[i]);
+            }
+
+            return returnWheelsFields;
         }
 
         private void collectFieldsToUpdate(
@@ -88,23 +110,23 @@ namespace Ex03.GarageLogic
             switch (groupType)
             {
                 case eFieldGroup.Additional:
-                    updatePropertiesOfVehicle(vehicle, i_FieldsWithValues);
+                    updateDynamicPropertiesOfVehicle(vehicle, i_FieldsWithValues);
                     break;
 
                 case eFieldGroup.Wheel:
                     foreach(Wheel wheel in vehicle.Wheels)
                     {
-                        updatePropertiesOfVehicle(wheel, i_FieldsWithValues);
+                        updateDynamicPropertiesOfVehicle(wheel, i_FieldsWithValues);
                     }
                     break;
 
                 case eFieldGroup.Tank:
-                    updatePropertiesOfVehicle(vehicle.Tank, i_FieldsWithValues);
+                    updateDynamicPropertiesOfVehicle(vehicle.Tank, i_FieldsWithValues);
                     break;
             }
         }
 
-        private void updatePropertiesOfVehicle(object objectToUpdate, Dictionary<string, object> i_FieldsWithValues)
+        private void updateDynamicPropertiesOfVehicle(object objectToUpdate, Dictionary<string, object> i_FieldsWithValues)
         {
             foreach (KeyValuePair<string, object> fieldWithValue in i_FieldsWithValues)
             {
@@ -172,16 +194,6 @@ namespace Ex03.GarageLogic
             return vehiclesLicenses;
         }
 
-        private VehicleInGarage getVehicleInGarage(string i_License)
-        {
-            if(!IsVehicleExistsInGarage(i_License))
-            {
-                throw new ArgumentException($"Vehicle with license {i_License} doesn't exists.");
-            }
-
-            return r_Vehicles[i_License];
-        }
-
         public void RefuelVehicle(string i_License, FuelTank.eFuelType i_FuelType, float i_FuelAmountToAdd)
         {
             Vehicle vehicle = getVehicleInGarage(i_License).Vehicle;
@@ -204,6 +216,18 @@ namespace Ex03.GarageLogic
             }
 
             tank.Recharge(i_BatteryTimeToAdd);
+        }
+
+        public void UpdateWheelFieldsById(string i_License, int i_WheelId, Dictionary<string, object> i_FieldValuePairs)
+        {
+            Vehicle vehicle = getVehicleInGarage(i_License).Vehicle;
+
+            if(!Validations.IsInRange(i_WheelId, 0, vehicle.Wheels.Count - 1))
+            {
+                throw new ValueOutOfRangeException("Wheel's number provided is out of range.", 0, vehicle.Wheels.Count - 1);
+            }
+
+            updateDynamicPropertiesOfVehicle(vehicle.Wheels[i_WheelId], i_FieldValuePairs);
         }
 
         public Dictionary<string, VehicleCreator.eType> GetVehicleTypes()

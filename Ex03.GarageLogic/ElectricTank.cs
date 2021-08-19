@@ -17,27 +17,29 @@ namespace Ex03.GarageLogic
 
         public override eType Type
         {
-            get { return eType.Electric; }
+            get
+            {
+                return eType.Electric;
+            }
         }
 
         public override float EnergyPercent
         {
-            get { return m_BatteryTime / r_MaxBatteryTime * 100; }
+            get
+            {
+                return m_BatteryTime / r_MaxBatteryTime * 100;
+            }
         }
 
         public float BatteryTime
         {
-            get { return m_BatteryTime; }
+            get
+            {
+                return m_BatteryTime;
+            }
             set
             {
-                try
-                {
-                    Recharge(value);
-                }
-                catch(ValueOutOfRangeException exception)
-                {
-                    throw;
-                }
+                Recharge(value);
             }
         }
 
@@ -45,7 +47,7 @@ namespace Ex03.GarageLogic
         {
             float maxAmountPossible = r_MaxBatteryTime - m_BatteryTime;
 
-            if (i_BatteryTimeToAdd < 0)
+            if (i_BatteryTimeToAdd < 0 || i_BatteryTimeToAdd > r_MaxBatteryTime)
             {
                 throw new ValueOutOfRangeException("Invalid battery time amount.", 0, maxAmountPossible);
             }

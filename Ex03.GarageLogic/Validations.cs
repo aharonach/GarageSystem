@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 
 namespace Ex03.GarageLogic
 {
@@ -12,14 +9,9 @@ namespace Ex03.GarageLogic
             return i_Value != null && i_Value.All(char.IsDigit);
         }
 
-        public static bool IsAlphaNumeric(string i_Value)
+        public static bool IsInRange(int i_Number, int i_Min, int i_Max)
         {
-            return i_Value != null && i_Value.All(char.IsLetterOrDigit);
-        }
-
-        public static bool IsAlphabetic(string i_Value)
-        {
-            return i_Value != null && i_Value.All(char.IsLetter);
+            return i_Number >= i_Min && i_Number <= i_Max;
         }
     }
 }

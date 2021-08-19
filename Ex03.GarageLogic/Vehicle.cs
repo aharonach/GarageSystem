@@ -47,11 +47,11 @@ namespace Ex03.GarageLogic
             protected set { m_Tank = value; }
         }
 
-        private void addWheel(string i_Manufacturer, float i_MaxAirPressure, float i_AirPressure)
+        private void addWheel(int i_WheelId, string i_Manufacturer, float i_MaxAirPressure, float i_AirPressure)
         {
             if(r_Wheels.Count < r_NumOfWheels)
             {
-                r_Wheels.Add(new Wheel(i_Manufacturer, i_MaxAirPressure, i_AirPressure));
+                r_Wheels.Add(new Wheel(i_WheelId, i_Manufacturer, i_MaxAirPressure, i_AirPressure));
             }
         }
 
@@ -59,7 +59,7 @@ namespace Ex03.GarageLogic
         {
             for (int i = 0; i < r_NumOfWheels; i++)
             {
-                addWheel(string.Empty, i_MaxAirPressure, 0);
+                addWheel(i + 1, string.Empty, i_MaxAirPressure, 0);
             }
         }
 
@@ -70,13 +70,19 @@ namespace Ex03.GarageLogic
 
         public abstract Dictionary<string, PropertyInfo> GetFieldsToUpdate();
 
-        public Dictionary<string, PropertyInfo> GetFieldsToUpdateOfWheels()
+        public List<Dictionary<string, PropertyInfo>> GetFieldsToUpdateOfWheels()
         {
-            Dictionary<string, PropertyInfo> fields = new Dictionary<string, PropertyInfo>
+            List<Dictionary<string, PropertyInfo>> fields = new List<Dictionary<string, PropertyInfo>>(Wheels.Count);
+
+            for(int i = 0; i < Wheels.Count; i++)
             {
-                { $"Wheels Manufacturer", Wheels[0].GetType().GetProperty("Manufacturer") },
-                { $"Wheels Current Air Pressure (Max is {Wheels[0].MaxAirPressure})", Wheels[0].GetType().GetProperty("AirPressure") }
-            };
+                fields.Add(new Dictionary<string, PropertyInfo>());
+
+                foreach (KeyValuePair<string, PropertyInfo> propertyInfo in Wheels[i].GetFieldsToUpdate())
+                {
+                    fields[i].Add(propertyInfo.Key, propertyInfo.Value);
+                }
+            }
 
             return fields;
         }
@@ -96,23 +102,23 @@ namespace Ex03.GarageLogic
             };
 
             // Add wheels properties values
-            for (int i = 0; i < r_NumOfWheels; i++)
+            foreach (Wheel wheel in Wheels)
             {
-                fields.Add($"Wheel {i + 1} Manufacturer", Wheels[i].Manufacturer);
-                fields.Add($"Wheel {i + 1} Maximum Air Pressure", Wheels[i].MaxAirPressure);
-                fields.Add($"Wheel {i + 1} Current Air Pressure", Wheels[i].AirPressure);
+                fields.Add($"Wheel {wheel.Id}: Manufacturer", wheel.Manufacturer);
+                fields.Add($"Wheel {wheel.Id}: Maximum Air Pressure", wheel.MaxAirPressure);
+                fields.Add($"Wheel {wheel.Id}: Current Air Pressure", wheel.AirPressure);
             }
 
             // Add tank properties values
-            foreach (KeyValuePair<string, object> kvp in Tank.GetFieldsValues())
+            foreach (KeyValuePair<string, object> keyValuePair in Tank.GetFieldsValues())
             {
-                fields.Add(kvp.Key, kvp.Value);
+                fields.Add(keyValuePair.Key, keyValuePair.Value);
             }
 
             // Add custom properties values of child classes
-            foreach (KeyValuePair<string, PropertyInfo> kvp in GetFieldsToUpdate())
+            foreach (KeyValuePair<string, PropertyInfo> keyValuePair in GetFieldsToUpdate())
             {
-                fields.Add(kvp.Key, kvp.Value.GetValue(this, null));
+                fields.Add(keyValuePair.Key, keyValuePair.Value.GetValue(this, null));
             }
 
             return fields;
