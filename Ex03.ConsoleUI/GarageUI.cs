@@ -305,6 +305,11 @@ namespace Ex03.ConsoleUI
                 {
                     Console.WriteLine(exception.Message);
                 }
+                catch (ValueOutOfRangeException exception)
+                {
+                    outOfRangeMessage(exception);
+                }
+
             }
             else
             {
@@ -328,6 +333,11 @@ namespace Ex03.ConsoleUI
             {
                 Console.WriteLine(exception.Message);
             }
+            catch (ValueOutOfRangeException exception)
+            {
+                outOfRangeMessage(exception);
+            }
+
         }
 
         private void inflateAirInWheels()
@@ -345,6 +355,10 @@ namespace Ex03.ConsoleUI
             catch (FormatException exception)
             {
                 Console.WriteLine(exception.Message);
+            }
+            catch (ValueOutOfRangeException exception)
+            {
+                outOfRangeMessage(exception);
             }
         }
 

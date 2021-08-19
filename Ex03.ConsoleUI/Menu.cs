@@ -14,12 +14,13 @@ namespace Ex03.ConsoleUI
 
         private void initMenu()
         {
-            addOption("Insert new car", Menu.eActionType.InsertCar);
-            addOption("Show cars", Menu.eActionType.ShowVehicles);
-            addOption("Inflate air to max", Menu.eActionType.InflateAir);
-            addOption("Refuel a car", Menu.eActionType.Refuel);
-            addOption("Charge a car", Menu.eActionType.Charge);
-            addOption("View car details", Menu.eActionType.ViewVehicle);
+            addOption("Insert new vehicle", Menu.eActionType.InsertCar);
+            addOption("Show vehicles", Menu.eActionType.ShowVehicles);
+            addOption("Change vehicle status", Menu.eActionType.ChangeStatus);
+            addOption("Inflate wheels air to max", Menu.eActionType.InflateAir);
+            addOption("Refuel a vehicle", Menu.eActionType.Refuel);
+            addOption("Charge a vehicle", Menu.eActionType.Charge);
+            addOption("View vehicle details", Menu.eActionType.ViewVehicle);
             addOption("Exit", Menu.eActionType.Exit);
         }
 

@@ -54,11 +54,8 @@ namespace Ex03.GarageLogic
 
         public void UpdateVehicleStatusInGarage(string i_License, eVehicleStatus i_VehicleStatus)
         {
-            if (IsVehicleExistsInGarage(i_License))
-            {
-                VehicleInGarage vehicleInGarage = getVehicleInGarage(i_License);
-                vehicleInGarage.Status = i_VehicleStatus;
-            }
+            VehicleInGarage vehicleInGarage = getVehicleInGarage(i_License);
+            vehicleInGarage.Status = i_VehicleStatus;
         }
 
         public void InflateAirInVehicleWheels(string i_License)
