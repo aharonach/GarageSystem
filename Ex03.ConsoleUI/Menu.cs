@@ -5,7 +5,8 @@ namespace Ex03.ConsoleUI
 {
     internal class Menu
     {
-        private readonly List<KeyValuePair<string, eActionType>> r_Options = new List<KeyValuePair<string, eActionType>>(10);
+        private readonly List<KeyValuePair<string, eActionType>> r_Options =
+            new List<KeyValuePair<string, eActionType>>(10);
 
         public Menu()
         {

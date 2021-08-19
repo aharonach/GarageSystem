@@ -126,10 +126,10 @@ namespace Ex03.ConsoleUI
                 }
                 else
                 {
-                    Console.WriteLine("\nEnter your name:");
+                    Console.WriteLine("\nEnter person's name:");
                     string personName = InputUtils.GetStringFromUser();
 
-                    Console.WriteLine("\nEnter your phone number:");
+                    Console.WriteLine("\nEnter person's phone number:");
                     string phone = InputUtils.GetStringFromUser();
 
                     Console.WriteLine("\nChoose vehicle's type:");
